@@ -1,5 +1,4 @@
-import { useRef, useState } from "react";
-import { useEffect } from "react";
+import { useRef } from "react";
 import { Card } from "../utils/types";
 
 function Carte(props: { carte: Card }) {
@@ -13,40 +12,13 @@ function Carte(props: { carte: Card }) {
   );
 }
 
-export default function Frise({ data }: { data: Card }) {
-  const [nbCartes, setNbCartes] = useState(0);
-  const [cartes, setCartes] = useState<Card[]>([]);
-  const didInit = useRef(false);
-
-  useEffect(() => {
-    if (!didInit.current) {
-      handleAddCarte(0); // Ajout de la première carte lors de l'initialisation
-      didInit.current = true;
-    } else {
-      // Ajouter une nouvelle carte chaque fois que `data` change
-      handleAddCarte(nbCartes);
-    }
-  }, [data]); // Le `useEffect` se déclenche chaque fois que `data` change
-
-  function handleAddCarte(index: number) {
-    const newCarte: Card = {
-      id: nbCartes,
-      titre: `Carte ${nbCartes + 1}`,
-      date: 1945,
-      type: "historique",
-      thematic: "thématique",
-      detail: "Description de la carte",
-    };
-
-    setCartes((oldCartes) => {
-      const updated = [...oldCartes];
-      updated.splice(index, 0, newCarte); // insertion à l'index voulu
-      return updated;
-    });
-
-    setNbCartes((old) => old + 1);
-  }
-
+export default function Frise({
+  cartes,
+  onAddCarte,
+}: {
+  cartes: Card[];
+  onAddCarte: (index: number) => void;
+}) {
   return (
     <div className="frise">
       <div className="frise__add">
@@ -58,13 +30,13 @@ export default function Frise({ data }: { data: Card }) {
             <div className="button_container">
               <button
                 className="button_put_before"
-                onClick={() => handleAddCarte(index)}
+                onClick={() => onAddCarte(index)}
               >
                 ↙
               </button>
               <button
                 className="button_put_after"
-                onClick={() => handleAddCarte(index + 1)}
+                onClick={() => onAddCarte(index + 1)}
               >
                 ↘
               </button>

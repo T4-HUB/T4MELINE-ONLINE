@@ -1,23 +1,44 @@
-
-import "./pioche.css"; // Import CSS for styling
+import "./pioche.css";
 import Carte from "./carte";
-import React, { useState, useEffect } from 'react';
-import './pioche.css'; // Import CSS for styling
+import React, { useState, useEffect } from "react";
 import { Card } from "../utils/types";
 
 const Cartes: Card[] = [
-  { thematic: "historique", titre: "Carte 1", type: "type1", detail: "Détails de la carte 1", date: new Date("2023-01-01") },
-  { thematic: "historique", titre: "Carte 2", type: "type2", detail: "Détails de la carte 2", date: new Date("2023-02-01") },
-  { thematic: "historique", titre: "Carte 3", type: "type3", detail: "Détails de la carte 3", date: new Date("2023-03-01") },
+  {
+    id: 1,
+    thematic: "historique",
+    titre: "Carte 1",
+    type: "type1",
+    detail: "Détails de la carte 1",
+    date: 1945,
+  },
+  {
+    id: 2,
+    thematic: "historique",
+    titre: "Carte 2",
+    type: "type2",
+    detail: "Détails de la carte 2",
+    date: 1945,
+  },
+  {
+    id: 3,
+    thematic: "historique",
+    titre: "Carte 3",
+    type: "type3",
+    detail: "Détails de la carte 3",
+    date: 1954,
+  },
 ];
 
-
-export default function Pioche() {
+export default function Pioche({
+  onAddCarte,
+}: {
+  onAddCarte: (index: number) => void;
+}) {
   const [pioche, setPioche] = useState<Card[]>(Cartes);
   const [carteSelectionnee, setCarteSelectionnee] = useState<Card | null>(null);
   const [carteProposee, setCarteProposee] = useState<Card | null>(null);
 
-  // Propose une carte aléatoire dès le montage du composant
   useEffect(() => {
     if (pioche.length > 0) {
       const randomIndex = Math.floor(Math.random() * pioche.length);
@@ -31,23 +52,21 @@ export default function Pioche() {
       return;
     }
 
-    // Randomly select a card from the pioche
-
-    // Utilise la carte proposée comme carte sélectionnée
     const selectedCard = carteProposee;
     setCarteSelectionnee(selectedCard);
 
-    // Retire la carte sélectionnée de la pioche
-    const newPioche = pioche.filter(card => card !== selectedCard);
+    const newPioche = pioche.filter((card) => card !== selectedCard);
     setPioche(newPioche);
 
-    // Propose une nouvelle carte aléatoire
     if (newPioche.length > 0) {
       const randomIndex = Math.floor(Math.random() * newPioche.length);
       setCarteProposee(newPioche[randomIndex]);
     } else {
-      setCarteProposee(null); // Si la pioche est vide, aucune carte n'est proposée
+      setCarteProposee(null);
     }
+
+    // Appelle la fonction onAddCarte pour ajouter une carte à la frise
+    onAddCarte(0); // Ajoute la carte au début de la frise
   }
 
   return (
