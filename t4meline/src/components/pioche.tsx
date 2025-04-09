@@ -3,12 +3,19 @@ import "./pioche.css"; // Import CSS for styling
 import Carte from "./carte";
 import React, { useState, useEffect } from 'react';
 import './pioche.css'; // Import CSS for styling
+import { Card } from "../utils/types";
+
+const Cartes: Card[] = [
+  { thematic: "historique", titre: "Carte 1", type: "type1", detail: "Détails de la carte 1", date: new Date("2023-01-01") },
+  { thematic: "historique", titre: "Carte 2", type: "type2", detail: "Détails de la carte 2", date: new Date("2023-02-01") },
+  { thematic: "historique", titre: "Carte 3", type: "type3", detail: "Détails de la carte 3", date: new Date("2023-03-01") },
+];
 
 
 export default function Pioche() {
-  const [pioche, setPioche] = useState<string[]>(["carte1", "carte2", "carte3", "carte4", "carte5", "carte6", "carte7", "carte8", "carte9", "carte10"]);
-  const [carteSelectionnee, setCarteSelectionnee] = useState<string>("");
-  const [carteProposee, setCarteProposee] = useState<string>("");
+  const [pioche, setPioche] = useState<Card[]>(Cartes);
+  const [carteSelectionnee, setCarteSelectionnee] = useState<Card | null>(null);
+  const [carteProposee, setCarteProposee] = useState<Card | null>(null);
 
   // Propose une carte aléatoire dès le montage du composant
   useEffect(() => {
@@ -39,7 +46,7 @@ export default function Pioche() {
       const randomIndex = Math.floor(Math.random() * newPioche.length);
       setCarteProposee(newPioche[randomIndex]);
     } else {
-      setCarteProposee(""); // Si la pioche est vide, aucune carte n'est proposée
+      setCarteProposee(null); // Si la pioche est vide, aucune carte n'est proposée
     }
   }
 
@@ -49,14 +56,14 @@ export default function Pioche() {
       <div className="pioche-layout">
         <div className="pioche-liste">
           <div className="card-back" onClick={drawCard}>
-            <Carte nom={carteProposee} /> {/* Affiche la carte proposée */}
+            <Carte carte={carteProposee} isVisible={false} /> {/* Affiche la carte proposée */}
           </div>
         </div>
 
         <div className="selection">
           <h3>Carte sélectionnée</h3>
           <div className="selected-card">
-            <Carte nom={carteSelectionnee || ""} />
+            <Carte carte={carteSelectionnee} isVisible={true} />
           </div>
         </div>
       </div>

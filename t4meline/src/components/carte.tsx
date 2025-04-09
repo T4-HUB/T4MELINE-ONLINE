@@ -1,13 +1,26 @@
-import { useState } from "react";
+
+import { Card } from "../utils/types";
 
 interface CarteProps {
-    nom: string;
+    carte: Card | null;
+    isVisible: boolean;
 }
 
-export default function Carte({ nom }: CarteProps) {
-    return (
+export default function Carte({ carte, isVisible }: CarteProps) {
+    return !isVisible ? (
         <div className="carte-title">
-            <h2>{nom}</h2>
+            {carte && <h2>{carte.titre}</h2>}
+        </div>
+    ) : (
+        <div className="carte-back">
+            {carte && (
+                <>
+                    <h2>{carte.thematic}</h2>
+                    <p>{carte.detail}</p>
+                    <p>{carte.type}</p>
+                    <p>{carte.date.toLocaleDateString()}</p>
+                </>
+            )}
         </div>
     );
 }
