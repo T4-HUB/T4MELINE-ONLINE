@@ -24,6 +24,10 @@
   border-right: 1px solid #ddd; /* Supprimer le dernier trait pour éviter un bord inutile */
 }
 
+.leaderboard td:nth-child(2), 
+.leaderboard th:nth-child(2) {
+  text-align: center; /* Centre uniquement le texte de la colonne des noms */
+}
 .leaderboard th:last-child,
 .leaderboard td:last-child {
   border-right: none; /* Supprimer le dernier trait pour éviter un bord inutile */
