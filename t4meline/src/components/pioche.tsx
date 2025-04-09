@@ -39,7 +39,7 @@ export default function Pioche({
     }
 
     const selectedCard = carteProposee;
-    onSelectCarte(selectedCard!); // Transmet la carte sélectionnée à App
+    onSelectCarte(selectedCard!);
 
     const newPioche = pioche.filter((card) => card !== selectedCard);
     setPioche(newPioche);

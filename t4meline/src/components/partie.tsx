@@ -9,7 +9,7 @@ function Partie() {
   const location = useLocation();
   const { players } = location.state || { players: [] };
   const [playersState, setPlayersState] = useState<Player[]>(players);
-  // Initialisez l'état avec une carte par défaut
+
   const [cartes, setCartes] = useState<Card[]>([
     {
       id: 1,
@@ -38,7 +38,7 @@ function Partie() {
 
     if (isNaN(parsedDate1) || isNaN(parsedDate2)) {
       console.warn(`Impossible de comparer les dates : ${date1}, ${date2}`);
-      return 0; // Considérer comme égales si les dates sont invalides
+      return 0;
     }
 
     return parsedDate1 - parsedDate2;
@@ -59,7 +59,7 @@ function Partie() {
     setCartes((oldCartes) => {
       const newCartes = [...oldCartes];
       const insertionIndex = isBefore ? index : index + 1;
-      newCartes.splice(insertionIndex, 0, carte); // Insère la carte à l'index spécifié
+      newCartes.splice(insertionIndex, 0, carte);
 
       if (!isChronological(newCartes)) {
         alert("Les cartes ne sont pas dans l'ordre chronologique !");
@@ -68,7 +68,7 @@ function Partie() {
         setPlayersState((prevPlayers) =>
           prevPlayers.map((player, idx) =>
             idx === currentPlayerIndex
-              ? { ...player, score: player.score + 1 } // 
+              ? { ...player, score: player.score + 1 }
               : player
           )
         );
@@ -78,6 +78,7 @@ function Partie() {
     setCarteSelectionnee(null);
     nextPlayer();
   }
+
 
   return (
     <>
@@ -95,7 +96,7 @@ function Partie() {
       <Pioche
         onAddCarte={(carte) => handleAddCarte(carte, cartes.length - 1, false)}
         onSelectCarte={setCarteSelectionnee}
-        carteSelectionnee={carteSelectionnee} // Passe la carte sélectionnée à App
+        carteSelectionnee={carteSelectionnee}
       />
     </>
   );
