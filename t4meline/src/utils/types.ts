@@ -1,9 +1,10 @@
 export type Card = {
+  id: number;
   thematic: string;
   titre: string;
   type: string;
   detail: string;
-  date: Date;
+  date: number;
 };
 export type Player = {
   name: string;

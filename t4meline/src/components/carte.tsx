@@ -15,7 +15,7 @@ export default function Carte({ carte, isVisible }: CarteProps) {
           <h2>{carte.thematic}</h2>
           <p>{carte.detail}</p>
           <p>{carte.type}</p>
-          <p>{carte.date.toLocaleDateString()}</p>
+          <p>{carte.date}</p>
         </>
       )}
     </div>
