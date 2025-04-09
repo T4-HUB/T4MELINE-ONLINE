@@ -37,12 +37,8 @@ function App() {
 
   return (
     <>
-<<<<<<< HEAD
       <Frise cartes={cartes} onAddCarte={handleAddCarte} />
       <Pioche onAddCarte={handleAddCarte} />
-=======
-      <Accueil /> 
->>>>>>> oceane2
     </>
   );
 }
