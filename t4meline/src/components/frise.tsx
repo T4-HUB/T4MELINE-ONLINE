@@ -1,44 +1,41 @@
 import { useRef, useState } from "react";
 import { useEffect } from "react";
+import { Card } from "../utils/types";
 
-interface Carte {
-  id: number;
-  nom: string;
-  date: number;
-  categorie: string;
-  description: string;
-}
-
-function Carte(props: { carte: Carte }) {
+function Carte(props: { carte: Card }) {
   return (
     <div className="carte__details">
       <h2>{props.carte.date}</h2>
-      <h3>{props.carte.nom}</h3>
-      <p>{props.carte.categorie}</p>
-      <p>{props.carte.description}</p>
+      <h3>{props.carte.titre}</h3>
+      <p>{props.carte.type}</p>
+      <p>{props.carte.detail}</p>
     </div>
   );
 }
 
-export default function Frise() {
+export default function Frise({ data }: { data: Card }) {
   const [nbCartes, setNbCartes] = useState(0);
-  const [cartes, setCartes] = useState<Carte[]>([]);
+  const [cartes, setCartes] = useState<Card[]>([]);
   const didInit = useRef(false);
 
   useEffect(() => {
     if (!didInit.current) {
-      handleAddCarte(0);
+      handleAddCarte(0); // Ajout de la première carte lors de l'initialisation
       didInit.current = true;
+    } else {
+      // Ajouter une nouvelle carte chaque fois que `data` change
+      handleAddCarte(nbCartes);
     }
-  }, []);
+  }, [data]); // Le `useEffect` se déclenche chaque fois que `data` change
 
   function handleAddCarte(index: number) {
-    const newCarte: Carte = {
+    const newCarte: Card = {
       id: nbCartes,
-      nom: `Carte ${nbCartes + 1}`,
+      titre: `Carte ${nbCartes + 1}`,
       date: 1945,
-      categorie: "historique",
-      description: "Description de la carte",
+      type: "historique",
+      thematic: "thématique",
+      detail: "Description de la carte",
     };
 
     setCartes((oldCartes) => {
