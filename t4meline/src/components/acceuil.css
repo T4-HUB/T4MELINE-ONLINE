@@ -25,6 +25,12 @@
     padding: 2rem;
     text-align: center;
   }
+
+  h1 {
+    font-size:60px;
+    margin-bottom: 1rem;
+    color: rgb(255, 255, 255);
+  }
   
   .logo {
     height: 6em;
@@ -57,7 +63,7 @@
   /* Bouton de configuration */
   .settings-button {
     position: absolute;
-    top: 10px;
+    top: 15px;
     left: 10px;
     background-color: var(--yellow);
     color: var(--text-dark);
@@ -67,6 +73,7 @@
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    font-size: 20px ;
    
   }
   
@@ -122,6 +129,11 @@
     color: var(--text-dark);
   }
   
+  .sidebar-open .play-button{
+    margin-left: 300px;
+  }
+
+  
   /* Boutons dans la barre latérale */
   .modal-buttons {
     margin-top: 20px;
@@ -152,38 +164,65 @@
   
   /* Contenu principal */
   .main-content {
-    font-size: 23px;
-    color: rgb(255, 255, 255);
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center; 
+    height: calc(100vh - 100px);
+    margin-left: 0; 
+    transition: margin-left 0.3s ease; 
   }
   
+  /* Décalage lorsque la barre latérale est ouverte */
+  .sidebar-open .main-content {
+    margin-left: 300px; 
+  }
+  
+  /* Section d'entrée */
   .input-section {
     display: flex;
-    flex-direction: column; /* Aligne les éléments verticalement */
-    align-items: center; /* Centre horizontalement */
-    gap: 10px; /* Ajoute un espace entre les éléments */
+    flex-direction: column; 
+    align-items: center; 
+    gap: 20px; 
   }
   
   .input-section .top-row {
     display: flex;
-    flex-direction: row; /* Aligne l'input et le premier bouton horizontalement */
-    gap: 10px; /* Ajoute un espace entre l'input et le bouton */
-    width: 100%; /* Prend toute la largeur disponible */
+    flex-direction: row; 
+    gap: 10px;
+    width: 100%; 
   }
   
   .input-section input[type="text"] {
-    flex: 1; /* Permet à l'input de prendre tout l'espace disponible */
+    width: 300px; /* Largeur de l'input */
+    padding: 10px;
+    border: 1px solid var(--text-dark);
+    border-radius: 5px;
   }
   
   .input-section button {
-    width: auto; /* Ajuste la largeur des boutons */
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: var(--blue);
+    color: var(--text-light);
+    transition: background-color 0.3s ease;
   }
   
   .input-section button:hover {
-    background-color: var(--orange);
+    background-color: var(--purple);
   }
+  
+  .input-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; 
+    flex-direction: row;
+  }
+
   
   /* Bouton Play */
   .play-button button {
@@ -208,11 +247,12 @@
     list-style-type: none;
     margin: 0;
     padding: 10px;
-    text-align: right;
-    position: absolute;
-    top: 10px;
-    right: 10px;
+    position: absolute; 
+    top: 80px; 
+    right: 20px; 
+    text-align: left;
     font-size: 25px;
+    max-width: 300px; 
   }
   
   .items-list li {
@@ -221,6 +261,7 @@
     padding: 10px;
     margin-bottom: 5px;
     border-radius: 5px;
+    text-align: center;
     transition: background-color 0.3s ease;
   }
   
@@ -228,3 +269,38 @@
     background-color: var(--pink);
   }
   
+
+  .top-bar {
+    background-color: #b33d5e;
+    color: var(--text-light);
+    padding: 10px;
+    display: flex;
+    justify-content: flex-start; /* Aligne le bouton à gauche */
+    align-items: center;
+    height: 50px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+  
+  /* Bande en bas */
+  .bottom-bar {
+    background-color: #b33d5e;
+    color: var(--text-light);
+    padding: 10px;
+    display: flex;
+    justify-content: center; /* Centre le bouton */
+    align-items: center;
+    height: 50px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+  }
+
+  button{
+    margin-left: 20px;
+  }
