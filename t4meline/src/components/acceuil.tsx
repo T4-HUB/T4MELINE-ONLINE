@@ -26,15 +26,14 @@ function acceuil() {
 
   return (
     <div className={`app-container ${showSettings ? 'sidebar-open' : ''}`}>
-      {/* Bouton en haut à gauche */}
-      {!showSettings && (
-        <button 
+     <div className="top-bar">
+        <button
           className="settings-button"
-          onClick={() => setShowSettings(true)}
+          onClick={() => setShowSettings(!showSettings)}
         >
-          Configurer la partie
+          Configurer la page
         </button>
-      )}
+      </div>
 
       {/* Barre latérale pour les paramètres */}
       {showSettings && (
@@ -86,16 +85,16 @@ function acceuil() {
       <div className="main-content">
         <div className="input-section">
           <h1>T4meline</h1>
+          <div className="input- boutton">
           <input
             type="text"
             placeholder="Enter your name"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)} 
           />
-          <button onClick={handleAddItem}>+</button>
-          <div className="play-button">
-            <button onClick={handlePlay}>Play</button>
+          <button className = "boutton_plus" onClick={handleAddItem}>+</button>
           </div>
+          
         </div>
 
         <ul className="items-list">
@@ -103,6 +102,11 @@ function acceuil() {
             <li key={index}>{item}</li>
           ))}
         </ul>
+      </div>
+      <div className="bottom-bar">
+      <div className="play-button">
+          <button onClick={handlePlay}>Play</button>
+          </div>
       </div>
     </div>
   )
