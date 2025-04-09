@@ -1,0 +1,86 @@
+.pioche {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #f7f9fc;
+
+    /* Centre moi le composant au bas de page*/
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.pioche h2 {
+    font-size: 24px;
+    margin-bottom: 16px;
+    color: #333;
+    text-align: center;
+}
+
+/* Flex layout */
+.pioche-layout {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.pioche-liste,
+.selection {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+/* Style de la carte de pioche */
+.card-back {
+    width: 120px;
+    height: 180px;
+    background-color: #4a4a4a;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 48px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+}
+
+.card-back:hover {
+    transform: scale(1.05);
+}
+
+.pioche-text {
+    font-size: 14px;
+    margin-top: 8px;
+    color: #ddd;
+}
+
+/* Carte sélectionnée */
+.selection h3 {
+    font-size: 20px;
+    color: #444;
+    margin-bottom: 10px;
+}
+
+.selected-card {
+    width: 120px;
+    height: 180px;
+    background-color: #dceefb;
+    border: 2px dashed #4a90e2;
+    border-radius: 10px;
+    font-weight: bold;
+    color: #3178c6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
