@@ -5,7 +5,7 @@ import './acceuil.css'
 
 function acceuil() {
   const [inputValue, setInputValue] = useState('')
-  const [items, setItems] = useState<string[]>([]) 
+  const [items, setItems] = useState<string[]>([])
   const [showSettings, setShowSettings] = useState(false)
   const [numCards, setNumCards] = useState(10)
   const [maxPoints, setMaxPoints] = useState(5)
@@ -21,7 +21,8 @@ function acceuil() {
 
   const handlePlay = () => {
     if (items.length > 0) {
-      navigate("/partie"); // Redirige vers la page Partie
+      const players = items.map((name) => ({ name, score: 0 }));
+      navigate("/partie", { state: { players } }); // Redirige vers la page Partie
     }
   }
 
@@ -32,7 +33,7 @@ function acceuil() {
 
   return (
     <div className={`app-container ${showSettings ? 'sidebar-open' : ''}`}>
-     <div className="top-bar">
+      <div className="top-bar">
         <button
           className="settings-button"
           onClick={() => setShowSettings(!showSettings)}
@@ -92,15 +93,15 @@ function acceuil() {
         <div className="input-section">
           <h1>T4meline</h1>
           <div className="input- boutton">
-          <input
-            type="text"
-            placeholder="Enter your name"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)} 
-          />
-          <button className = "boutton_plus" onClick={handleAddItem}>+</button>
+            <input
+              type="text"
+              placeholder="Enter your name"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+            />
+            <button className="boutton_plus" onClick={handleAddItem}>+</button>
           </div>
-          
+
         </div>
 
         <ul className="items-list">
@@ -110,9 +111,9 @@ function acceuil() {
         </ul>
       </div>
       <div className="bottom-bar">
-      <div className="play-button">
+        <div className="play-button">
           <button onClick={handlePlay}>Play</button>
-          </div>
+        </div>
       </div>
     </div>
   )

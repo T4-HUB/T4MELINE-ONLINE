@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router";
 import Frise from "./frise";
 import Pioche from "./pioche";
 import Leaderboard from "./players";
-import { Card } from "../utils/types";
+import { Card, Player } from "../utils/types";
 
 function Partie() {
+  const location = useLocation();
+  const { players } = location.state || { players: [] };
   // Initialisez l'état avec une carte par défaut
   const [cartes, setCartes] = useState<Card[]>([
     {
@@ -20,6 +23,18 @@ function Partie() {
   // État pour la carte sélectionnée
   const [carteSelectionnee, setCarteSelectionnee] = useState<Card | null>(null);
 
+  const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0);
+
+  useEffect(() => {
+    const randomIndex = Math.floor(Math.random() * players.length);
+    setCurrentPlayerIndex(randomIndex);
+  }, [players]);
+
+  function nextPlayer() {
+    setCurrentPlayerIndex((prevIndex) => (prevIndex + 1) % players.length);
+  }
+
+
   function handleAddCarte(carte: Card, index: number, isBefore: boolean) {
     setCartes((oldCartes) => {
       const newCartes = [...oldCartes];
@@ -27,11 +42,15 @@ function Partie() {
       newCartes.splice(insertionIndex, 0, carte); // Insère la carte à l'index spécifié
       return newCartes;
     });
+    nextPlayer();
   }
 
   return (
     <>
-      <Leaderboard players={[]} />
+      <Leaderboard players={players} />
+      <div>
+        <h2>Joueur actuel : {players[currentPlayerIndex].name}</h2>
+      </div>
       <Frise
         cartes={cartes}
         onAddCarte={(index, isBefore) =>
