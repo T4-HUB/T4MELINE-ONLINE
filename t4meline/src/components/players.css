@@ -1,0 +1,55 @@
+.leaderboard {
+  position: fixed;
+  top: 0.5rem; /* Position plus proche du haut de l'écran */
+  left: 0.5rem; /* Position plus proche de la gauche de l'écran */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.5rem; /* Réduire le padding */
+  background: #f9f9f9;
+  z-index: 1000;
+  background: #34495E; /* Nouvelle couleur de fond */
+  color: #fbe8f4; /* Couleur de police plus claire pour un meilleur contraste */
+  font-family: 'Roboto', Arial, sans-serif; /* Police moderne et lisible */
+}
+
+.leaderboard table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leaderboard th,
+.leaderboard td {
+  text-align: left;
+  padding: 2px; /* Réduire l'espacement interne des cellules */
+  border-right: 1px solid #ddd; /* Supprimer le dernier trait pour éviter un bord inutile */
+}
+
+.leaderboard th:last-child,
+.leaderboard td:last-child {
+  border-right: none; /* Supprimer le dernier trait pour éviter un bord inutile */
+}
+.leaderboard th {
+  font-weight: bold;
+  border-bottom: 1px solid #ddd;
+}
+
+.scrollable-body {
+  max-height: 200px; /* Réduire la hauteur maximale */
+  overflow-y: auto; /* Activer le scroll vertical si nécessaire */
+}
+/* Rendre les en-têtes non scrollables */
+.leaderboard thead th {
+  position: sticky; /* Rend les en-têtes fixes */
+  top: 0; /* Fixe les en-têtes en haut de la table */
+  background: #34495E; /* Couleur de fond pour éviter que le texte ne chevauche le contenu */
+  z-index: 1; /* Assure que les en-têtes restent au-dessus des cellules */
+  border-bottom: 1px solid #ddd; /* Ajoute une bordure pour séparer les en-têtes */
+  color: #fbe8f4; /* Couleur de police plus claire pour un meilleur contraste */
+  font-family: 'Roboto', Arial, sans-serif; /* Police moderne et lisible */
+}
+.leaderboard h2 {
+  margin-bottom: 0.5rem; /* Espacement sous le titre */
+  padding-bottom: 0.5rem; /* Espacement interne */
+  border-bottom: 2px solid #ddd; /* Trait sous le titre */
+  color: #fff; /* Couleur du texte */
+}

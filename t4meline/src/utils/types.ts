@@ -5,3 +5,8 @@ export interface Card {
     detail: string;
     date: Date;
 }
+export interface Player {
+    name: string;
+    score: number;
+    color: string;
+}
