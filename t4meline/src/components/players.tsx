@@ -1,17 +1,12 @@
- import React from 'react';
 import './players.css';
+import { Player } from '../utils/types';
 
-type Player = {
-  name: string;
-  points: number;
-};
-
-type LeaderboardProps = {
+interface LeaderboardProps {
   players: Player[];
 };
 
-const Leaderboard: React.FC<LeaderboardProps> = ({ players }) => {
-  const sortedPlayers = [...players].sort((a, b) => b.points - a.points);
+export default function Leaderboard({ players }: LeaderboardProps) {
+  const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
 
   return (
     <div className="leaderboard">
@@ -30,7 +25,7 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ players }) => {
               <tr key={index}>
                 <td>{index + 1}</td>
                 <td>{player.name}</td>
-                <td>{player.points}</td>
+                <td>{player.score}</td>
               </tr>
             ))}
           </tbody>
@@ -39,5 +34,3 @@ const Leaderboard: React.FC<LeaderboardProps> = ({ players }) => {
     </div>
   );
 };
-
-export default Leaderboard;

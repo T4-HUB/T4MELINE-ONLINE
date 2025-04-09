@@ -3,11 +3,15 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import Pioche from "./components/pioche";
 import Frise from "./components/frise";
-import { Card } from "./utils/types";
+import { Card, Player } from "./utils/types";
+import Leaderboard from "./components/players";
 
 function App() {
   const [cartes, setCartes] = useState<Card[]>([]);
   const [nbCartes, setNbCartes] = useState(0);
+  const players: Player[] = [
+    { name: "Alice", score: 100 }, { name: "Bob", score: 200 },
+    { name: "Charlie", score: 150 }, { name: "David", score: 50 },]
 
   function handleAddCarte(index: number) {
     const newCarte: Card = {
@@ -32,6 +36,7 @@ function App() {
     <>
       <Frise cartes={cartes} onAddCarte={handleAddCarte} />
       <Pioche onAddCarte={handleAddCarte} />
+      <Leaderboard players={players} />
     </>
   );
 }
