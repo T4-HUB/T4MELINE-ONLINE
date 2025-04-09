@@ -56,7 +56,7 @@ export default function Pioche() {
       <div className="pioche-layout">
         <div className="pioche-liste">
           <div className="card-back" onClick={drawCard}>
-            <Carte carte={carteProposee} isVisible={false} /> {/* Affiche la carte proposée */}
+            <Carte carte={carteProposee} isVisible={false} />
           </div>
         </div>
 
