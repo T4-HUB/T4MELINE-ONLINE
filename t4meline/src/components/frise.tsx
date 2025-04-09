@@ -1,5 +1,7 @@
 import { useRef } from "react";
 import { Card } from "../utils/types";
+import "../index.css";
+
 
 function Carte(props: { carte: Card }) {
   return (
