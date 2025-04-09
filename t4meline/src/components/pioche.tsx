@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import "./pioche.css"; // Import CSS for styling
+import Carte from "./carte";
 
 export default function Pioche() {
   const [pioche, setPioche] = useState<string[]>([
@@ -15,9 +16,7 @@ export default function Pioche() {
     "carte9",
     "carte10",
   ]);
-  const [carteSelectionnee, setCarteSelectionnee] = useState<string | null>(
-    null
-  );
+  const [carteSelectionnee, setCarteSelectionnee] = useState<string>("");
 
   function drawCard() {
     if (pioche.length === 0) {
