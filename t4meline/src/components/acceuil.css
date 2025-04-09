@@ -1,0 +1,230 @@
+/* Palette de couleurs */
+:root {
+    --yellow: #ffe066;
+    --orange: #ff8c42;
+    --pink: #ff5c8a;
+    --purple: #a97aff;
+    --blue: #6abfff;
+    --background: #f9f9f9;
+    --text-light: #333333;
+    --text-dark: #1e1e2f;
+  }
+  
+  body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: var(--pink) ;
+    background-size: cover;
+    background-position: center;
+    color: var(--text-dark);
+    }
+  
+  #root {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+  }
+  
+  .logo {
+    height: 6em;
+    padding: 1.5em;
+    will-change: filter;
+    transition: filter 300ms;
+  }
+  .logo:hover {
+    filter: drop-shadow(0 0 2em #646cffaa);
+  }
+  .logo.react:hover {
+    filter: drop-shadow(0 0 2em #61dafbaa);
+  }
+  
+  @keyframes logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    a:nth-of-type(2) .logo {
+      animation: logo-spin infinite 20s linear;
+    }
+  }
+  
+  /* Bouton de configuration */
+  .settings-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: var(--yellow);
+    color: var(--text-dark);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+   
+  }
+  
+  .settings-button:hover {
+    background-color: var(--orange);
+  }
+  
+  .sidebar-open .settings-button {
+    display: none; /* Masque le bouton lorsque la barre latérale est ouverte */
+  }
+  
+  /* Barre latérale */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 100%;
+    background-color: #b33d5e;
+    color: var(--text-light);
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 10);
+    z-index: 1000;
+    overflow-y: auto;
+  }
+  
+  .sidebar h2 {
+    color: var(--yellow);
+    margin-bottom: 20px;
+  }
+  
+  .slider-container {
+    margin-bottom: 20px;
+  }
+  
+  .slider-container label {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .slider-container input[type="range"] {
+    width: 100%;
+    accent-color: var(--pink);
+  }
+  
+  .slider-container input[type="number"] {
+    width: 60px;
+    padding: 5px;
+    border: 1px solid var(--yellow);
+    border-radius: 5px;
+    background-color: var(--background);
+    color: var(--text-dark);
+  }
+  
+  /* Boutons dans la barre latérale */
+  .modal-buttons {
+    margin-top: 20px;
+  }
+  
+  .modal-buttons button {
+    background-color: var(--blue);
+    color: var(--text-light);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .modal-buttons button:hover {
+    background-color: var(--pink);
+  }
+  
+  .modal-buttons button:last-child {
+    background-color: var(--orange);
+  }
+  
+  .modal-buttons button:last-child:hover {
+    background-color: var(--yellow);
+  }
+  
+  /* Contenu principal */
+  .main-content {
+    font-size: 23px;
+    color: rgb(255, 255, 255);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .input-section {
+    display: flex;
+    flex-direction: column; /* Aligne les éléments verticalement */
+    align-items: center; /* Centre horizontalement */
+    gap: 10px; /* Ajoute un espace entre les éléments */
+  }
+  
+  .input-section .top-row {
+    display: flex;
+    flex-direction: row; /* Aligne l'input et le premier bouton horizontalement */
+    gap: 10px; /* Ajoute un espace entre l'input et le bouton */
+    width: 100%; /* Prend toute la largeur disponible */
+  }
+  
+  .input-section input[type="text"] {
+    flex: 1; /* Permet à l'input de prendre tout l'espace disponible */
+  }
+  
+  .input-section button {
+    width: auto; /* Ajuste la largeur des boutons */
+  }
+  
+  .input-section button:hover {
+    background-color: var(--orange);
+  }
+  
+  /* Bouton Play */
+  .play-button button {
+    font-size: 20px;
+    background-color: rgb(77, 155, 40);
+    color: rgb(255, 252, 252);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: 2px solid  rgb(235, 255, 235);
+  }
+  
+  .play-button button:hover {
+    background-color: var(--purple);
+  }
+  
+  /* Liste des items */
+  .items-list {
+    list-style-type: none;
+    margin: 0;
+    padding: 10px;
+    text-align: right;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 25px;
+  }
+  
+  .items-list li {
+    background-color: var(--blue);
+    color: var(--text-light);
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .items-list li:hover {
+    background-color: var(--pink);
+  }
+  
