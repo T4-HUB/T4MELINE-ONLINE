@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useEffect } from "react";
 
 interface Carte {
@@ -11,8 +11,11 @@ interface Carte {
 
 function Carte(props: { carte: Carte }) {
   return (
-    <div className="frise__carte">
-      <p>{props.carte.nom}</p>
+    <div className="carte__details">
+      <h2>{props.carte.date}</h2>
+      <h3>{props.carte.nom}</h3>
+      <p>{props.carte.categorie}</p>
+      <p>{props.carte.description}</p>
     </div>
   );
 }
@@ -20,8 +23,16 @@ function Carte(props: { carte: Carte }) {
 export default function Frise() {
   const [nbCartes, setNbCartes] = useState(0);
   const [cartes, setCartes] = useState<Carte[]>([]);
+  const didInit = useRef(false);
 
-  function handleAddCarte() {
+  useEffect(() => {
+    if (!didInit.current) {
+      handleAddCarte(0);
+      didInit.current = true;
+    }
+  }, []);
+
+  function handleAddCarte(index: number) {
     const newCarte: Carte = {
       id: nbCartes,
       nom: `Carte ${nbCartes + 1}`,
@@ -29,29 +40,42 @@ export default function Frise() {
       categorie: "historique",
       description: "Description de la carte",
     };
-    console.log("Frise.tsx: Adding carte:", newCarte);
-    setCartes((prev) => [...prev, newCarte]);
-    setNbCartes((prev) => prev + 1);
+
+    setCartes((oldCartes) => {
+      const updated = [...oldCartes];
+      updated.splice(index, 0, newCarte); // insertion à l'index voulu
+      return updated;
+    });
+
+    setNbCartes((old) => old + 1);
   }
 
   return (
-    <>
-      <div className="frise">
-        <div className="frise__add">
-          <h1>Frise Component</h1>
-          <button onClick={() => handleAddCarte()}>Increment</button>
-        </div>
-        <div className="frise__container">
-          {cartes.map((carte) => (
-            <div key={carte.id} className="frise__carte">
-              <h2>{carte.date}</h2>
-              <h3>{carte.nom}</h3>
-              <p>{carte.categorie}</p>
-              <p>{carte.description}</p>
-            </div>
-          ))}
-        </div>
+    <div className="frise">
+      <div className="frise__add">
+        <h1>Frise Component</h1>
       </div>
-    </>
+      <div className="frise__container">
+        {cartes.map((carte, index) => (
+          <div key={carte.id} className="frise__carte">
+            <div className="button_container">
+              <button
+                className="button_put_before"
+                onClick={() => handleAddCarte(index)}
+              >
+                ↙
+              </button>
+              <button
+                className="button_put_after"
+                onClick={() => handleAddCarte(index + 1)}
+              >
+                ↘
+              </button>
+            </div>
+            <Carte carte={carte} />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
