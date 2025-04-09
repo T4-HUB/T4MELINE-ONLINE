@@ -1,5 +1,7 @@
 import { useState } from 'react'
+import { useNavigate } from "react-router-dom";
 import './acceuil.css'
+
 
 function acceuil() {
   const [inputValue, setInputValue] = useState('')
@@ -7,16 +9,20 @@ function acceuil() {
   const [showSettings, setShowSettings] = useState(false)
   const [numCards, setNumCards] = useState(10)
   const [maxPoints, setMaxPoints] = useState(5)
+  const navigate = useNavigate();
 
   const handleAddItem = () => {
-    if (inputValue.trim() !== '') {
-      setItems([...items, inputValue])
-      setInputValue('')
+    if (inputValue.trim() !== "") {
+      const truncatedName = inputValue.trim().slice(0, 17); // Limite à 17 caractères
+      setItems([...items, truncatedName]);
+      setInputValue("");
     }
-  }
+  };
 
   const handlePlay = () => {
-    alert('Play button clicked!')
+    if (items.length > 0) {
+      navigate("/partie"); // Redirige vers la page Partie
+    }
   }
 
   const handleSaveSettings = () => {
