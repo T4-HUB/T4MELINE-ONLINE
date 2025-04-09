@@ -1,10 +1,11 @@
 import React from 'react';
 import { useState } from 'react';
 import './pioche.css'; // Import CSS for styling
+import Carte from './carte';
 
 export default function Pioche() {
     const [pioche, setPioche] = useState<string[]>(["carte1", "carte2", "carte3", "carte4", "carte5", "carte6", "carte7", "carte8", "carte9", "carte10"]);
-    const [carteSelectionnee, setCarteSelectionnee] = useState<string | null>(null);
+    const [carteSelectionnee, setCarteSelectionnee] = useState<string>("");
 
 
     function drawCard() {
@@ -26,19 +27,17 @@ export default function Pioche() {
     return (
         <div className="pioche">
             <h2>Pioche</h2>
-
             <div className="pioche-layout">
                 <div className="pioche-liste">
                     <div className="card-back" onClick={drawCard}>
-                        🎴
-                        <span className="pioche-text">Piocher</span>
+                        <Carte nom={carteSelectionnee} />
                     </div>
                 </div>
 
                 <div className="selection">
                     <h3>Carte sélectionnée</h3>
                     <div className="selected-card">
-                        {carteSelectionnee ? carteSelectionnee : "Aucune carte sélectionnée"}
+                        <Carte nom={carteSelectionnee} />
                     </div>
                 </div>
             </div>
