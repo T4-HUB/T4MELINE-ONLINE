@@ -1,16 +1,9 @@
-<<<<<<< HEAD
 import { useState } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import Pioche from "./components/pioche";
 import Frise from "./components/frise";
 import { Card } from "./utils/types";
-=======
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import Accueil from './components/acceuil.tsx'
->>>>>>> oceane2
 
 function App() {
   const [cartes, setCartes] = useState<Card[]>([]);
