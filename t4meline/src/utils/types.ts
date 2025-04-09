@@ -5,7 +5,7 @@ export type Card = {
     detail: string;
     date: Date;
 }
-export interface Player {
+export type Player = {
     name: string;
     score: number;
     color: string;
