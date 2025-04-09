@@ -6,7 +6,7 @@ import Frise from "./components/frise.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <Frise></Frise>
+    <Frise />
     <Pioche />
   </StrictMode>
 );

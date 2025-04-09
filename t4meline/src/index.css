@@ -51,25 +51,37 @@ button:focus-visible {
   flex-direction: column;
   place-items: center;
   gap: 1em;
-  padding: 1em;
-  width: 100%;
-  max-width: 800px;
+  width: 99%;
   margin: auto;
+  box-sizing: border-box;
+}
+
+.frise__add {
+  gap: 1em;
+  margin: auto;
+  padding: 1em;
+  box-sizing: border-box;
+  position: fixed;
 }
 
 .frise__container {
   display: flex;
   place-items: center;
   gap: 1em;
-  width: 100%;
-  max-width: 800px;
   margin: auto;
+  padding-top: 150px;
 }
 
-.frise__carte {
-  width: 200px;
-  height: 400px;
+.carte__details {
+  width: 220px;
+  height: 350px;
   background-color: #f9f9f9;
   color: #1a1a1a;
   border-radius: 8px;
+}
+
+.button_container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1em;
 }
