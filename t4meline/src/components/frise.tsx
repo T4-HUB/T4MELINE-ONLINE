@@ -1,15 +1,22 @@
-import { useRef } from "react";
 import { Card } from "../utils/types";
 import "../index.css";
 
-
 function Carte(props: { carte: Card }) {
   return (
-    <div className="carte__details">
-      <h2>{props.carte.date}</h2>
-      <h3>{props.carte.titre}</h3>
-      <p>{props.carte.type}</p>
-      <p>{props.carte.detail}</p>
+    <div className="card">
+      <div className="card__body">
+        <span className="card__body__thematic">{props.carte.thematic}</span>
+        <span className="card__body__type">{props.carte.type}</span>
+        <h1 className="card__body__head">{props.carte.titre}</h1>
+        <p className="card__body__content">{props.carte.detail}</p>
+      </div>
+      <div style={{ backgroundColor: "red" }} className="card__footer">
+        <div className="card__Footer__first">
+          <div>
+            <p>{props.carte.date}</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -19,7 +26,7 @@ export default function Frise({
   onAddCarte,
 }: {
   cartes: Card[];
-  onAddCarte: (index: number) => void;
+  onAddCarte: (index: number, isBefore: boolean) => void;
 }) {
   return (
     <div className="frise">
@@ -32,13 +39,13 @@ export default function Frise({
             <div className="button_container">
               <button
                 className="button_put_before"
-                onClick={() => onAddCarte(index)}
+                onClick={() => onAddCarte(index, true)} // Ajouter à gauche
               >
-                ↙
+                ↖
               </button>
               <button
                 className="button_put_after"
-                onClick={() => onAddCarte(index + 1)}
+                onClick={() => onAddCarte(index, false)} // Ajouter à droite
               >
                 ↘
               </button>

@@ -2,40 +2,25 @@ import "./pioche.css";
 import Carte from "./carte";
 import React, { useState, useEffect } from "react";
 import { Card } from "../utils/types";
-
-const Cartes: Card[] = [
-  {
-    id: 1,
-    thematic: "historique",
-    titre: "Carte 1",
-    type: "type1",
-    detail: "Détails de la carte 1",
-    date: 1945,
-  },
-  {
-    id: 2,
-    thematic: "historique",
-    titre: "Carte 2",
-    type: "type2",
-    detail: "Détails de la carte 2",
-    date: 1945,
-  },
-  {
-    id: 3,
-    thematic: "historique",
-    titre: "Carte 3",
-    type: "type3",
-    detail: "Détails de la carte 3",
-    date: 1954,
-  },
-];
+import { loadCards } from "../utils/loadCards";
 
 export default function Pioche({
   onAddCarte,
+  onSelectCarte,
 }: {
-  onAddCarte: (index: number) => void;
+  onAddCarte: (carte: Card) => void;
+  onSelectCarte: (carte: Card) => void;
 }) {
-  const [pioche, setPioche] = useState<Card[]>(Cartes);
+  const [pioche, setPioche] = useState<Card[]>([]);
+
+  useEffect(() => {
+    async function fetchCards() {
+      const loadedCards = await loadCards();
+      setPioche(loadedCards);
+    }
+    fetchCards();
+  }, []);
+
   const [carteSelectionnee, setCarteSelectionnee] = useState<Card | null>(null);
   const [carteProposee, setCarteProposee] = useState<Card | null>(null);
 
@@ -54,6 +39,7 @@ export default function Pioche({
 
     const selectedCard = carteProposee;
     setCarteSelectionnee(selectedCard);
+    onSelectCarte(selectedCard!); // Transmet la carte sélectionnée à App
 
     const newPioche = pioche.filter((card) => card !== selectedCard);
     setPioche(newPioche);
@@ -64,9 +50,6 @@ export default function Pioche({
     } else {
       setCarteProposee(null);
     }
-
-    // Appelle la fonction onAddCarte pour ajouter une carte à la frise
-    onAddCarte(0); // Ajoute la carte au début de la frise
   }
 
   return (
@@ -82,7 +65,7 @@ export default function Pioche({
         <div className="selection">
           <h3>Carte sélectionnée</h3>
           <div className="selected-card">
-            <Carte carte={carteSelectionnee} isVisible={true} />
+            <Carte carte={carteSelectionnee} isVisible={false} />
           </div>
         </div>
       </div>
