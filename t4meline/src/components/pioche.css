@@ -1,5 +1,6 @@
 .pioche {
-  max-width: 100%;
+  width: 50%;
+  height: 300px;
   margin: 50px auto;
   padding: 20px;
   background-color: #f7f9fc;
@@ -16,8 +17,8 @@
 }
 
 .pioche h2 {
-  font-size: 24px;
-  margin-bottom: 16px;
+  margin-top: 0;
+  margin-bottom: 0;
   color: #333;
   text-align: center;
 }
@@ -25,8 +26,8 @@
 /* Flex layout */
 .pioche-layout {
   display: flex;
+  height: 80%;
   justify-content: space-between;
-  gap: 30px;
   align-items: flex-start;
 }
 
@@ -35,12 +36,13 @@
   flex: 1;
   display: flex;
   justify-content: center;
+  height: 100%;
 }
 
 /* Style de la carte de pioche */
 .card-back {
-  width: 120px;
-  height: 180px;
+  width: 40%;
+  height: 100%;
   background-color: #4a4a4a;
   border-radius: 10px;
   cursor: pointer;
@@ -49,9 +51,13 @@
   justify-content: center;
   align-items: center;
   color: white;
-  font-size: 48px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s ease;
+}
+
+.carte-title {
+  font-size: 12px;
+  font-weight: bold;
 }
 
 .card-back:hover {
@@ -65,15 +71,24 @@
 }
 
 /* Carte sélectionnée */
+.selection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .selection h3 {
   font-size: 20px;
   color: #444;
-  margin-bottom: 10px;
+  margin-bottom: 0px;
+  margin-top: 0px;
 }
 
 .selected-card {
-  width: 120px;
-  height: 180px;
+  width: 40%;
+  height: 100%;
   background-color: #dceefb;
   border: 2px dashed #4a90e2;
   border-radius: 10px;

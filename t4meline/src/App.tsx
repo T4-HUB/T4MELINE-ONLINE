@@ -1,37 +1,46 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import Pioche from "./components/pioche";
 import Frise from "./components/frise";
 import { Card } from "./utils/types";
 
 function App() {
-  const [cartes, setCartes] = useState<Card[]>([]);
-  const [nbCartes, setNbCartes] = useState(0);
-
-  function handleAddCarte(index: number) {
-    const newCarte: Card = {
-      id: nbCartes,
-      titre: `Carte ${nbCartes + 1}`,
-      date: 1945,
+  // Initialisez l'état avec une carte par défaut
+  const [cartes, setCartes] = useState<Card[]>([
+    {
+      id: 1,
+      titre: "Carte Initiale",
+      date: 1900,
       type: "historique",
-      thematic: "thématique",
-      detail: "Description de la carte",
-    };
+      thematic: "Thématique Initiale",
+      detail: "Ceci est une carte par défaut.",
+    },
+  ]);
 
+  // État pour la carte sélectionnée
+  const [carteSelectionnee, setCarteSelectionnee] = useState<Card | null>(null);
+
+  function handleAddCarte(carte: Card, index: number, isBefore: boolean) {
     setCartes((oldCartes) => {
-      const updated = [...oldCartes];
-      updated.splice(index, 0, newCarte); // insertion à l'index voulu
-      return updated;
+      const newCartes = [...oldCartes];
+      const insertionIndex = isBefore ? index : index + 1;
+      newCartes.splice(insertionIndex, 0, carte); // Insère la carte à l'index spécifié
+      return newCartes;
     });
-
-    setNbCartes((old) => old + 1);
   }
 
   return (
     <>
-      <Frise cartes={cartes} onAddCarte={handleAddCarte} />
-      <Pioche onAddCarte={handleAddCarte} />
+      <Frise
+        cartes={cartes}
+        onAddCarte={(index, isBefore) =>
+          carteSelectionnee &&
+          handleAddCarte(carteSelectionnee, index, isBefore)
+        }
+      />
+      <Pioche
+        onAddCarte={(carte) => handleAddCarte(carte, cartes.length - 1, false)}
+        onSelectCarte={setCarteSelectionnee} // Passe la carte sélectionnée à App
+      />
     </>
   );
 }
