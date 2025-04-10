@@ -1,6 +1,6 @@
-import * as express from 'express';
-import * as http from 'http';
-import { Server as SocketIOServer } from 'socket.io';
+import * as express from "express";
+import * as http from "http";
+import { Server as SocketIOServer } from "socket.io";
 
 type Player = {
   name: string;
@@ -100,6 +100,6 @@ io.on('connection', (socket) => {
 
 // Démarrer le serveur
 const PORT = 3001;
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Serveur en écoute sur http://0.0.0.0:${PORT}`);
+server.listen(PORT, () => {
+  console.log(`Serveur en écoute sur ${PORT}`);
 });
