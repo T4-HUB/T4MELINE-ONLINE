@@ -7,9 +7,12 @@ import Leaderboard from './players';
 import { Card, Player } from '../utils/types';
 import { loadCards } from '../utils/loadCards'; // Assurez-vous que cette fonction est correctement importée
 import './partie.css';
+import { API_URL } from "../config"; // Chemin relatif selon ton fichier
+
+
 
 // Adresse du serveur
-const socket = io('http://localhost:3001');
+const socket = io(API_URL);
 
 function Partie() {
   const location = useLocation();
