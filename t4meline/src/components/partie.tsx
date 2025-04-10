@@ -47,27 +47,6 @@ function Partie() {
     setCurrentPlayerIndex((prevIndex) => (prevIndex + 1) % playersState.length);
   }
 
-  function checkEndGame() {
-    // Condition 1 : Toutes les cartes ont été jouées
-    if (pioche.length === 0 && !carteSelectionnee) {
-      setIsGameOver(true);
-      return true;
-    }
-
-    // Condition 2 : Un joueur atteint le score maximum
-    if (maxPoints > 0 && playersState.some((player) => player.score >= maxPoints)) {
-      setIsGameOver(true);
-      return true;
-    }
-
-    if (pioche.length > nbCards) {
-      setIsGameOver(true);
-      return true;
-    }
-
-    return false;
-  }
-
   function compareDates(date1: string, date2: string): number {
     const value1 = parseSeasonalDate(date1, "start");
     const value2 = parseSeasonalDate(date2, "start");
@@ -180,7 +159,7 @@ function Partie() {
 
   useEffect(() => {
     if (isGameOver) {
-      navigate("/endgame");
+      navigate("/endgame", { state: { players: playersState } });
     }
   }, [isGameOver, playersState]);
 
