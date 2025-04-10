@@ -14,17 +14,6 @@ function Partie() {
   console.log("state :", location.state);
   const [playersState, setPlayersState] = useState<Player[]>(players);
 
-  const [cartes, setCartes] = useState<Card[]>([
-    {
-      id: 1,
-      titre: "Carte Initiale",
-      date: 1900,
-      type: "historique",
-      thematic: "Thématique Initiale",
-      detail: "Ceci est une carte par défaut.",
-    },
-  ]);
-
   const [pioche, setPioche] = useState<Card[]>([]);
   // État pour la carte sélectionnée
   const [carteSelectionnee, setCarteSelectionnee] = useState<Card | null>(null);
@@ -38,11 +27,17 @@ function Partie() {
     async function fetchCards() {
       console.log("Nombre de catres à charger :", nbCards);
       const loadedCards = await loadCards(nbCards);
-      setPioche(loadedCards);
-      console.log("Pioche initialisée avec les cartes :", loadedCards);
+      const randomIndex = Math.floor(Math.random() * loadedCards.length);
+      const firstCard = loadedCards[randomIndex];
+      const remainingCards = loadedCards.filter((_, index) => index !== randomIndex);
+      setCartes([firstCard]);
+      setPioche(remainingCards);
+      console.log("Pioche initialisée avec les cartes :", remainingCards);
     }
     fetchCards();
   }, [nbCards]);
+
+  const [cartes, setCartes] = useState<Card[]>([]);
 
 
   function nextPlayer() {
