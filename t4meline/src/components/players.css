@@ -1,5 +1,4 @@
 .leaderboard {
-  position: fixed;
   top: 0.5rem; /* Position plus proche du haut de l'écran */
   left: 0.5rem; /* Position plus proche de la gauche de l'écran */
   border: 1px solid #ccc;

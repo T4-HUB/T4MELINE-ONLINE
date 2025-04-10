@@ -1,39 +1,30 @@
-.partie-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px; /* Espace entre les composants */
-    padding: 20px;
-  }
-  
-  .partie-container > div {
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 5px;
-  }
 
-  html, body {
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+.partie {
+  display: flex;
+  flex-direction: row; /* Met les enfants en ligne */
+  height: 100vh; /* Prend toute la hauteur de l'écran */
+  overflow: hidden; /* Empêche la page entière de scroller */
+}
 
-  .frise-container {
-    display: flex;
-    flex-direction: row; /* Aligne les éléments horizontalement */
-    gap: 10px; /* Ajoute un espace entre les éléments */
-    overflow-x: auto; /* Permet le défilement horizontal si nécessaire */
-    padding: 10px;
-    border: 1px solid #ccc; /* Optionnel : ajoute une bordure pour visualiser la frise */
-    border-radius: 5px;
-    background-color: #f9f9f9; /* Optionnel : couleur de fond */
-  }
-  
-  .frise-item {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
-    text-align: center;
-    min-width: 100px; /* Largeur minimale pour chaque élément */
-  }
+.leaderboard {
+  width: 20%; /* Exemple, ajuste comme tu veux */
+  min-width: 200px;
+  height: min-content;
+  overflow: hidden; /* Fixe, ne scrollent pas */
+}
+
+.frise-container {
+  flex: 1; /* Prend l’espace restant */
+  overflow-y: auto; /* Scroll vertical uniquement pour la frise */
+  padding: 1rem;
+  background: #f9f9f9;
+}
+
+.pioche {
+  width: 20%; /* Exemple, ajuste comme tu veux */
+  min-width: 200px;
+  max-width: 100px;
+  overflow: hidden; /* Fixe, ne scrollent pas */
+  top:0;
+  display: contents;
+}
