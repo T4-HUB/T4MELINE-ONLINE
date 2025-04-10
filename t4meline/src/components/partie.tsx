@@ -1,11 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router";
 import Frise from "./frise";
 import Pioche from "./pioche";
 import Leaderboard from "./players";
-import { Card } from "../utils/types";
+import { Card, Player } from "../utils/types";
 
 function Partie() {
-  // Initialisez l'état avec une carte par défaut
+  const location = useLocation();
+  const { players } = location.state || { players: [] };
+  const [playersState, setPlayersState] = useState<Player[]>(players);
+
   const [cartes, setCartes] = useState<Card[]>([
     {
       id: 1,
@@ -20,18 +24,68 @@ function Partie() {
   // État pour la carte sélectionnée
   const [carteSelectionnee, setCarteSelectionnee] = useState<Card | null>(null);
 
+  const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(0);
+
+
+
+  function nextPlayer() {
+    setCurrentPlayerIndex((prevIndex) => (prevIndex + 1) % playersState.length);
+  }
+
+  function compareDates(date1: string, date2: string): number {
+    const parsedDate1 = new Date(date1).getTime();
+    const parsedDate2 = new Date(date2).getTime();
+
+    if (isNaN(parsedDate1) || isNaN(parsedDate2)) {
+      console.warn(`Impossible de comparer les dates : ${date1}, ${date2}`);
+      return 0;
+    }
+
+    return parsedDate1 - parsedDate2;
+  }
+
+  function isChronological(cards: Card[]): boolean {
+    console.log("Vérification des cartes :", cards);
+    for (let i = 1; i < cards.length; i++) {
+      if (compareDates(cards[i - 1].date.toString(), cards[i].date.toString()) > 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+
   function handleAddCarte(carte: Card, index: number, isBefore: boolean) {
     setCartes((oldCartes) => {
       const newCartes = [...oldCartes];
       const insertionIndex = isBefore ? index : index + 1;
-      newCartes.splice(insertionIndex, 0, carte); // Insère la carte à l'index spécifié
+      newCartes.splice(insertionIndex, 0, carte);
+
+      if (!isChronological(newCartes)) {
+        alert("Les cartes ne sont pas dans l'ordre chronologique !");
+        newCartes.sort((a, b) => compareDates(a.date.toString(), b.date.toString()));
+      } else {
+        setPlayersState((prevPlayers) =>
+          prevPlayers.map((player, idx) =>
+            idx === currentPlayerIndex
+              ? { ...player, score: player.score + 1 }
+              : player
+          )
+        );
+      }
       return newCartes;
     });
+    setCarteSelectionnee(null);
+    nextPlayer();
   }
+
 
   return (
     <>
-      <Leaderboard players={[]} />
+      <Leaderboard players={playersState} />
+      <div>
+        <h2>Joueur actuel : {playersState[currentPlayerIndex].name}</h2>
+      </div>
       <Frise
         cartes={cartes}
         onAddCarte={(index, isBefore) =>
@@ -41,7 +95,8 @@ function Partie() {
       />
       <Pioche
         onAddCarte={(carte) => handleAddCarte(carte, cartes.length - 1, false)}
-        onSelectCarte={setCarteSelectionnee} // Passe la carte sélectionnée à App
+        onSelectCarte={setCarteSelectionnee}
+        carteSelectionnee={carteSelectionnee}
       />
     </>
   );

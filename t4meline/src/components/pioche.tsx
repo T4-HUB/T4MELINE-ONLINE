@@ -7,9 +7,11 @@ import { loadCards } from "../utils/loadCards";
 export default function Pioche({
   onAddCarte,
   onSelectCarte,
+  carteSelectionnee,
 }: {
   onAddCarte: (carte: Card) => void;
   onSelectCarte: (carte: Card) => void;
+  carteSelectionnee: Card | null;
 }) {
   const [pioche, setPioche] = useState<Card[]>([]);
 
@@ -21,7 +23,6 @@ export default function Pioche({
     fetchCards();
   }, []);
 
-  const [carteSelectionnee, setCarteSelectionnee] = useState<Card | null>(null);
   const [carteProposee, setCarteProposee] = useState<Card | null>(null);
 
   useEffect(() => {
@@ -38,8 +39,7 @@ export default function Pioche({
     }
 
     const selectedCard = carteProposee;
-    setCarteSelectionnee(selectedCard);
-    onSelectCarte(selectedCard!); // Transmet la carte sélectionnée à App
+    onSelectCarte(selectedCard!);
 
     const newPioche = pioche.filter((card) => card !== selectedCard);
     setPioche(newPioche);
@@ -65,7 +65,11 @@ export default function Pioche({
         <div className="selection">
           <h3>Carte sélectionnée</h3>
           <div className="selected-card">
-            <Carte carte={carteSelectionnee} isVisible={false} />
+            {carteSelectionnee ? (
+              <Carte carte={carteSelectionnee} isVisible={false} />
+            ) : (
+              <p>Aucune carte sélectionnée</p>
+            )}
           </div>
         </div>
       </div>
