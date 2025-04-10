@@ -9,4 +9,6 @@ export type Card = {
 export type Player = {
     name: string;
     score: number;
+    isReady: boolean;
+    id: string;
 };

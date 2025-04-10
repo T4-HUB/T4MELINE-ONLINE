@@ -1,195 +1,95 @@
-import React, { useEffect, useState } from "react";
-import { Navigate, useLocation } from "react-router";
-import Frise from "./frise";
-import Pioche from "./pioche";
-import Leaderboard from "./players";
-import { Card, Player } from "../utils/types";
-import { loadCards } from "../utils/loadCards";
-import { useNavigate } from "react-router";
-import "./partie.css";
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import io from 'socket.io-client';
+import Frise from './frise';
+import Pioche from './pioche';
+import Leaderboard from './players';
+import { Card, Player } from '../utils/types';
+import { loadCards } from '../utils/loadCards'; // Assurez-vous que cette fonction est correctement importée
+import './partie.css';
+
+// Adresse du serveur
+const socket = io('http://localhost:3001');
 
 function Partie() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { players, numCards: nbCards, maxPoints } = location.state || { players: [] };
-  console.log("state :", location.state);
-  const [playersState, setPlayersState] = useState<Player[]>(players);
+  const { players, numCards, maxPoints } = location.state || { players: [], numCards: 0, maxPoints: 0 };
 
-  const [pioche, setPioche] = useState<Card[]>([]);
-  // État pour la carte sélectionnée
-  const [carteSelectionnee, setCarteSelectionnee] = useState<Card | null>(null);
-
-  const [currentPlayerIndex, setCurrentPlayerIndex] = useState<number>(
-    Math.floor(Math.random() * players.length)
-  );
-  const [isGameOver, setIsGameOver] = useState<boolean>(false);
-
-  useEffect(() => {
-    async function fetchCards() {
-      console.log("Nombre de catres à charger :", nbCards);
-      const loadedCards = await loadCards(nbCards);
-      const randomIndex = Math.floor(Math.random() * loadedCards.length);
-      const firstCard = loadedCards[randomIndex];
-      const remainingCards = loadedCards.filter((_, index) => index !== randomIndex);
-      setCartes([firstCard]);
-      setPioche(remainingCards);
-      console.log("Pioche initialisée avec les cartes :", remainingCards);
-    }
-    fetchCards();
-  }, [nbCards]);
-
+  // États
+  const [playersState, setPlayersState] = useState<Player[]>([]);
   const [cartes, setCartes] = useState<Card[]>([]);
+  const [pioche, setPioche] = useState<Card[]>([]);
+  const [currentPlayer, setCurrentPlayer] = useState<string>('');
+  const [selectedCard, setSelectedCard] = useState<Card | null>(null);
 
+  useEffect(() => {
+    console.log("État des joueurs (playersState):", playersState);
+  }, [playersState]);
+  // Initialisation du jeu
+  useEffect(() => {
+    {
+      
+      // Charger les cartes à partir de la fonction utilitaire
+      loadCards(numCards).then((loadedCards) => {
+        const initialCard = loadedCards[0]; // Utilisez la première carte comme point de départ
+        const remainingCards = loadedCards.slice(1); // Le reste ira dans la pioche
 
-  function nextPlayer() {
-    setCurrentPlayerIndex((prevIndex) => (prevIndex + 1) % playersState.length);
-  }
-
-  function compareDates(date1: string, date2: string): number {
-    const value1 = parseSeasonalDate(date1, "start");
-    const value2 = parseSeasonalDate(date2, "start");
-
-    if (value1 === null || value2 === null) {
-      console.warn(`Impossible de comparer les dates : "${date1}" et "${date2}"`);
-      return 0;
+        setCartes([initialCard]);
+        setPioche(remainingCards);
+        console.log("Cartes chargées :", loadedCards);
+      });
     }
+    socket.emit('initGame', { playersList: players, numCards, maxScore: maxPoints });
 
-    return value1 - value2;
-  }
-
-  function parseSeasonalDate(dateStr: string, mode: "start" | "average" = "start"): number | null {
-    const seasonMap: { [key: string]: number } = {
-      "printemps": 0.0,
-      "été": 0.25,
-      "ete": 0.25,
-      "automne": 0.5,
-      "hiver": 0.75
-    };
-
-    const seasons = [...dateStr.toLowerCase().matchAll(/(printemps|été|ete|automne|hiver)/g)];
-    const years = [...dateStr.matchAll(/\d{4}/g)].map(match => parseInt(match[0]));
-
-    if (years.length === 0) return null;
-
-    const getDateValue = (index: number): number => {
-      const year = years[index];
-      const seasonMatch = seasons[index];
-      const season = seasonMatch ? seasonMap[seasonMatch[1]] : 0.0;
-      return year + season;
-    };
-
-    if (mode === "average" && years.length >= 2) {
-      const start = getDateValue(0);
-      const end = getDateValue(1);
-      return (start + end) / 2;
-    }
-
-    return getDateValue(0);
-  }
-
-  function isChronological(cards: Card[]): boolean {
-    console.log("Vérification des cartes :", cards);
-    for (let i = 1; i < cards.length; i++) {
-      if (compareDates(cards[i - 1].date.toString(), cards[i].date.toString()) > 0) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  function drawCard() {
-    if (carteSelectionnee) {
-      return;
-    }
-
-    if (pioche.length === 0) {
-      alert("No more cards in the deck!");
-      return;
-    }
-
-    if (pioche.length > nbCards) {
-      alert(`Vous ne pouvez pas tirer plus de ${nbCards} cartes.`);
-      return;
-    }
-
-    const randomIndex = Math.floor(Math.random() * pioche.length);
-    const selectedCard = pioche[randomIndex];
-    setCarteSelectionnee(selectedCard);
-
-    const newPioche = pioche.filter((_, index) => index !== randomIndex);
-    setPioche(newPioche);
-  }
-
-
-  function handleAddCarte(carte: Card, index: number, isBefore: boolean) {
-    setCartes((oldCartes) => {
-      const newCartes = [...oldCartes];
-      const insertionIndex = isBefore ? index : index + 1;
-      newCartes.splice(insertionIndex, 0, carte);
-
-      if (!isChronological(newCartes)) {
-        alert("Les cartes ne sont pas dans l'ordre chronologique !");
-        newCartes.sort((a, b) => compareDates(a.date.toString(), b.date.toString()));
-      } else {
-        setPlayersState((prevPlayers) => {
-          const updatedPlayers = prevPlayers.map((player, idx) =>
-            idx === currentPlayerIndex
-              ? { ...player, score: player.score + 1 }
-              : player
-          );
-
-          // Vérifier la fin de partie après la mise à jour du score
-          if (updatedPlayers.some((player) => player.score >= maxPoints)) {
-            setIsGameOver(true); // Déclencher la fin de partie
-          }
-
-          return updatedPlayers;
-        });
-      }
-      return newCartes;
+    socket.on('gameState', (players: Player[]) => {
+      setPlayersState(players);
     });
-    setCarteSelectionnee(null);
 
-    if (!isGameOver) {
-      nextPlayer();
-    }
-  }
+    socket.on('cardDrawn', (card: Card) => {
+      setSelectedCard(card);
+    });
 
-  useEffect(() => {
-    if (isGameOver) {
-      navigate("/endgame", { state: { players: playersState } });
-    }
-  }, [isGameOver, playersState]);
+    socket.on('gameOver', ({ winner }: { winner: { name: string; score: number } }) => {
+      alert(`Le gagnant est ${winner.name} avec ${winner.score} points !`);
+      navigate('/endgame', { state: { players: playersState } });
+    });
 
-  useEffect(() => {
-    if (pioche.length === 0 && carteSelectionnee) {
-      alert("La taille de la pioche dépasse la limite autorisée. Fin de la partie !");
-      setIsGameOver(true);
-    }
-  }, [pioche, carteSelectionnee]);
+    socket.on('error', (message: string) => {
+      alert(message);
+    });
 
-
-  return (
     
 
-    <div className="partie">
-  <div className="pioche">  <Pioche
-        pioche={pioche}
-        onDrawCard={drawCard}
-        carteSelectionnee={carteSelectionnee}
-      /> </div>
-  <div className="frise-container"> <Frise
-            cartes={cartes}
-            onAddCarte={(index, isBefore) =>
-              carteSelectionnee &&
-              handleAddCarte(carteSelectionnee, index, isBefore)
-            }
-          /></div>
-          <div className="leaderboard"> <h2>Joueur actuel : {playersState[currentPlayerIndex].name}</h2>
-  <Leaderboard players={playersState} /> </div>
+    return () => {
+      socket.off('gameState');
+      socket.off('cardDrawn');
+      socket.off('gameOver');
+      socket.off('error');
+    };
+  }, [players, numCards, maxPoints, playersState, navigate]);
+
   
-  </div>
-   
+
+  return (
+    <div className="partie">
+      <div className="pioche">
+        <Pioche pioche={pioche} onDrawCard={drawCard} carteSelectionnee={selectedCard} />
+      </div>
+      <div className="frise-container">
+        <Frise cartes={cartes} onAddCarte={(index, isBefore) => handleAddCarte(index, isBefore)} />
+      </div>
+      <div className="leaderboard">
+  {playersState.length > 0 ? (
+    <>
+      <h2>Joueur actuel : {currentPlayer}</h2>
+      <Leaderboard players={playersState} />
+    </>
+  ) : (
+    <p>Aucun joueur n'est disponible pour le moment...</p>
+  )}
+</div>
+    </div>
   );
 }
 
