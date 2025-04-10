@@ -4,7 +4,7 @@ import "./acceuil.css";
 import { useNavigate } from "react-router-dom";
 
 // Adresse du serveur
-const socket = io("http://172.20.10.3:3001");
+const socket = io("https://w41-api.onrender.com/");
 
 function Acceuil() {
   const [inputValue, setInputValue] = useState(""); // Saisie du nom du joueur
