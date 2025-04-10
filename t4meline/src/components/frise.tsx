@@ -30,9 +30,7 @@ export default function Frise({
 }) {
   return (
     <div className="frise">
-      <div className="frise__add">
-        <h1>Frise Component</h1>
-      </div>
+      <h2>🗓️ Frise Chronologique</h2>
       <div className="frise__container">
         {cartes.map((carte, index) => (
           <div key={carte.id} className="frise__carte">

@@ -18,7 +18,6 @@ export default function Pioche({
 
   return (
     <div className="pioche">
-      <h2>Pioche</h2>
       <div className="pioche-layout">
         <div className="pioche-liste">
           <div

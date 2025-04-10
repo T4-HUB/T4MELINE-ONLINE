@@ -6,6 +6,7 @@ import Leaderboard from "./players";
 import { Card, Player } from "../utils/types";
 import { loadCards } from "../utils/loadCards";
 import { useNavigate } from "react-router";
+import "./partie.css";
 
 function Partie() {
   const location = useLocation();
@@ -169,24 +170,26 @@ function Partie() {
 
 
   return (
-    <>
-      <Leaderboard players={playersState} />
-      <div>
-        <h2>Joueur actuel : {playersState[currentPlayerIndex].name}</h2>
-      </div>
-      <Frise
-        cartes={cartes}
-        onAddCarte={(index, isBefore) =>
-          carteSelectionnee &&
-          handleAddCarte(carteSelectionnee, index, isBefore)
-        }
-      />
-      <Pioche
+    
+
+    <div className="partie">
+  <div className="pioche">  <Pioche
         pioche={pioche}
         onDrawCard={drawCard}
         carteSelectionnee={carteSelectionnee}
-      />
-    </>
+      /> </div>
+  <div className="frise-container"> <Frise
+            cartes={cartes}
+            onAddCarte={(index, isBefore) =>
+              carteSelectionnee &&
+              handleAddCarte(carteSelectionnee, index, isBefore)
+            }
+          /></div>
+          <div className="leaderboard"> <h2>Joueur actuel : {playersState[currentPlayerIndex].name}</h2>
+  <Leaderboard players={playersState} /> </div>
+  
+  </div>
+   
   );
 }
 
