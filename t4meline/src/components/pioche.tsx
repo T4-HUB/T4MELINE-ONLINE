@@ -5,60 +5,31 @@ import { Card } from "../utils/types";
 import { loadCards } from "../utils/loadCards";
 
 export default function Pioche({
-  onAddCarte,
-  onSelectCarte,
+  pioche,
   carteSelectionnee,
+  onDrawCard,
 }: {
-  onAddCarte: (carte: Card) => void;
-  onSelectCarte: (carte: Card) => void;
+  pioche: Card[];
+  onDrawCard: (carte: Card) => void;
   carteSelectionnee: Card | null;
 }) {
-  const [pioche, setPioche] = useState<Card[]>([]);
 
-  useEffect(() => {
-    async function fetchCards() {
-      const loadedCards = await loadCards();
-      setPioche(loadedCards);
-    }
-    fetchCards();
-  }, []);
 
-  const [carteProposee, setCarteProposee] = useState<Card | null>(null);
-
-  useEffect(() => {
-    if (pioche.length > 0) {
-      const randomIndex = Math.floor(Math.random() * pioche.length);
-      setCarteProposee(pioche[randomIndex]);
-    }
-  }, [pioche]);
-
-  function drawCard() {
-    if (pioche.length === 0) {
-      alert("No more cards in the deck!");
-      return;
-    }
-
-    const selectedCard = carteProposee;
-    onSelectCarte(selectedCard!);
-
-    const newPioche = pioche.filter((card) => card !== selectedCard);
-    setPioche(newPioche);
-
-    if (newPioche.length > 0) {
-      const randomIndex = Math.floor(Math.random() * newPioche.length);
-      setCarteProposee(newPioche[randomIndex]);
-    } else {
-      setCarteProposee(null);
-    }
-  }
 
   return (
     <div className="pioche">
       <h2>Pioche</h2>
       <div className="pioche-layout">
         <div className="pioche-liste">
-          <div className="card-back" onClick={drawCard}>
-            <Carte carte={carteProposee} isVisible={false} />
+          <div
+            className="card-back"
+            onClick={() => {
+              if (pioche.length > 0) {
+                onDrawCard(pioche[0]);
+              }
+            }}
+          >
+            <p>{pioche.length > 0 ? "Tirer une carte" : "Pioche vide"}</p>
           </div>
         </div>
 

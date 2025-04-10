@@ -22,7 +22,7 @@ function acceuil() {
   const handlePlay = () => {
     if (items.length > 0) {
       const players = items.map((name) => ({ name, score: 0 }));
-      navigate("/partie", { state: { players } }); // Redirige vers la page Partie
+      navigate("/partie", { state: { players, numCards, maxPoints } }); // Redirige vers la page Partie
     }
   }
 
