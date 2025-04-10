@@ -9,7 +9,7 @@ import { loadCards } from '../utils/loadCards'; // Assurez-vous que cette foncti
 import './partie.css';
 
 // Adresse du serveur
-const socket = io('http://localhost:3001');
+const socket = io('https://w41-api.onrender.com/');
 
 function Partie() {
   const location = useLocation();
