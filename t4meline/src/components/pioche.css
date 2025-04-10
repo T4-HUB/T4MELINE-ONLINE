@@ -1,12 +1,10 @@
 .pioche {
   width: 50%;
   height: 300px;
-  margin: 50px auto;
+  margin: 50px;
   padding: 20px;
   background-color: #f7f9fc;
 
-  /* Centre moi le composant au bas de page*/
-  position: fixed;
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
@@ -25,11 +23,12 @@
 
 /* Flex layout */
 .pioche-layout {
+  margin: 20px;
   display: flex;
   height: 80%;
   justify-content: space-between;
-  align-items: flex-start;
-}
+  flex-direction: column;
+  }
 
 .pioche-liste,
 .selection {
@@ -41,13 +40,13 @@
 
 /* Style de la carte de pioche */
 .card-back {
-  width: 40%;
+  width: 170px;
   height: 100%;
   background-color: #4a4a4a;
   border-radius: 10px;
   cursor: pointer;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
   color: white;
@@ -87,7 +86,7 @@
 }
 
 .selected-card {
-  width: 40%;
+  width: 170px;
   height: 100%;
   background-color: #dceefb;
   border: 2px dashed #4a90e2;

@@ -4,6 +4,7 @@ import Frise from "./frise";
 import Pioche from "./pioche";
 import Leaderboard from "./players";
 import { Card, Player } from "../utils/types";
+import "./partie.css";
 
 function Partie() {
   const location = useLocation();
@@ -81,24 +82,25 @@ function Partie() {
 
 
   return (
-    <>
-      <Leaderboard players={playersState} />
-      <div>
-        <h2>Joueur actuel : {playersState[currentPlayerIndex].name}</h2>
-      </div>
-      <Frise
-        cartes={cartes}
-        onAddCarte={(index, isBefore) =>
-          carteSelectionnee &&
-          handleAddCarte(carteSelectionnee, index, isBefore)
-        }
-      />
-      <Pioche
-        onAddCarte={(carte) => handleAddCarte(carte, cartes.length - 1, false)}
-        onSelectCarte={setCarteSelectionnee}
-        carteSelectionnee={carteSelectionnee}
-      />
-    </>
+
+    <div className="partie">
+  <div className="pioche"> <Pioche
+          onAddCarte={(carte) => handleAddCarte(carte, cartes.length - 1, false)}
+          onSelectCarte={setCarteSelectionnee}
+          carteSelectionnee={carteSelectionnee}
+        /> </div>
+  <div className="frise-container"> <Frise
+            cartes={cartes}
+            onAddCarte={(index, isBefore) =>
+              carteSelectionnee &&
+              handleAddCarte(carteSelectionnee, index, isBefore)
+            }
+          /></div>
+          <div className="leaderboard"> <h2>Joueur actuel : {playersState[currentPlayerIndex].name}</h2>
+  <Leaderboard players={playersState} /> </div>
+  
+  </div>
+   
   );
 }
 

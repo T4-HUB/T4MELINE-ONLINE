@@ -61,7 +61,7 @@ button:focus-visible {
   margin: auto;
   padding: 1em;
   box-sizing: border-box;
-  position: fixed;
+ 
 }
 
 .frise__container {
@@ -125,6 +125,7 @@ button:focus-visible {
   text-align: center;
   display: flex;
   flex-direction: column;
+  height: 100%;
   overflow: hidden;
 }
 .card__body span {
@@ -151,11 +152,6 @@ button:focus-visible {
   text-align: center;
   background-color: rgb(240, 54, 85);
   color: white;
-}
-
-.card__Footer__second {
-}
-.card__Footer__third {
 }
 
 .card__body__content{
