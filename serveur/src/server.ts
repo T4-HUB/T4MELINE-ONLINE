@@ -7,34 +7,29 @@ import { loadCards } from "./loadCards";
 const app = express();
 const server = http.createServer(app);
 
-let nbrPlayers = 0; // Compteur de joueurs
-let currentPlayerIndex = 1;
+let nbrPlayers = 0;
+let currentPlayerIndex = 0;
 
-// Configurer Socket.IO avec CORS
 const io = new SocketIOServer(server, {
   cors: {
-    origin: "*", // Autoriser toutes les origines pour les connexions React
+    origin: "*",
     methods: ["GET", "POST"],
   },
 });
 
-let players: Player[] = []; // Liste des joueurs
+let players: Player[] = [];
 let pioche: Card[] = [];
 let frise: Card[] = [];
 
-// Vérifier si Express fonctionne bien
 app.get("/", (req, res) => {
   res.send("Serveur Socket.IO est en marche !");
 });
 
-// Gestion des événements Socket.IO
 io.on("connection", (socket) => {
-  console.log("Un client est connecté.");
+  console.log("Un client est connecté avec l'ID:", socket.id);
 
-  // Envoyer la liste actuelle des joueurs à la connexion
   socket.emit("playersUpdate", players);
 
-  // Ajouter un nouveau joueur
   socket.on("addPlayer", (newPlayer: Player) => {
     const playerExists = players.some(
       (player) => player.name.toLowerCase() === newPlayer.name.toLowerCase()
@@ -43,30 +38,27 @@ io.on("connection", (socket) => {
     if (playerExists) {
       socket.emit("playerNameTaken", "Ce nom est déjà pris, choisissez-en un autre.");
     } else {
-      // Ajouter le socketId au joueur
-      players.push({ ...newPlayer, score: 0, socketId: socket.id }); // Initialiser le score à 0 et ajouter socketId
+      players.push({ ...newPlayer, score: 0, socketId: socket.id, isCurrentPlayer: false });
       if (players.length === 1) {
-        players[0].isCurrentPlayer = true; // Le premier joueur est le joueur actuel
+        players[0].isCurrentPlayer = true;
       }
       console.log("Liste des joueurs mise à jour après ajout :");
-      console.table(players); // Affiche les joueurs en tableau dans la console
-      io.emit("playersUpdate", players); // Notifier tous les clients
+      console.table(players);
+      io.emit("playersUpdate", players);
       nbrPlayers++;
       console.log(`Nombre de joueurs connectés : ${nbrPlayers}`);
     }
   });
 
-  // Modifier le statut "prêt" d'un joueur
   socket.on("togglePlayerStatus", (playerName: string) => {
     players = players.map((player) =>
       player.name === playerName ? { ...player, isReady: !player.isReady } : player
     );
     console.log("Liste des joueurs mise à jour après modification du statut :");
     console.table(players);
-    io.emit("playersUpdate", players); // Notifier tous les clients
+    io.emit("playersUpdate", players);
   });
 
-  // Démarrer la partie
   socket.on("startGame", () => {
     console.log("Tentative de démarrage de la partie...");
     const everyoneReady = players.every((player) => player.isReady);
@@ -77,23 +69,21 @@ io.on("connection", (socket) => {
       return;
     }
 
-    io.emit("gameStarted"); 
+    io.emit("gameStarted");
     console.log("Tous les joueurs sont prêts, la partie commence !");
   });
 
-   // Initialisation du jeu
-   socket.on("initGame", async () => {
+  socket.on("initGame", async () => {
     try {
-      const loadedCards = await loadCards(80); // Chargez les cartes
+      const loadedCards = await loadCards(80);
       pioche = loadedCards;
       const randomIndex = Math.floor(Math.random() * pioche.length);
-      const carteTiree = pioche[randomIndex]; // Tire la première carte
-      pioche.splice(randomIndex, 1); // Enlève la carte de la pioche
-      frise = [carteTiree]; // Initialiser la frise avec une seule carte
+      const carteTiree = pioche[randomIndex];
+      pioche.splice(randomIndex, 1);
+      frise = [carteTiree];
       io.emit("gameState", { players, pioche, frise });
 
-      // Notifier au joueur actuel qu'il doit jouer
-      socket.emit("yourTurn", players[currentPlayerIndex]);
+      updateCurrentPlayer();
 
     } catch (error) {
       console.error("Erreur lors du chargement des cartes :", error);
@@ -101,95 +91,69 @@ io.on("connection", (socket) => {
     }
   });
 
-  // Quand un joueur place une carte
-  socket.on("placeCarte", ({ carte, position }) => {
+  socket.on("placeCarte", ({ carte, position }, callback) => {
+    const player = players.find(p => p.socketId === socket.id);
+    if (!player || !player.isCurrentPlayer) {
+      callback({ success: false, message: "Ce n'est pas votre tour." });
+      return;
+    }
+
     const newFrise = [...frise];
-    const index = position === "before" ? 0 : frise.length;
     if (position === "before") {
       newFrise.unshift(carte);
     } else {
       newFrise.push(carte);
     }
 
-    // Valider le placement de la carte
     const isCorrect = validateCartePlacement(carte, position);
     let points = 0;
     if (isCorrect) {
-      points = 10; // Exemple de score
+      points = 10;
     }
 
-    // Mise à jour des scores
-    players = players.map(player => {
-      if (player.socketId === socket.id) {
-        player.score += points;
+    players = players.map(p => {
+      if (p.socketId === socket.id) {
+        p.score += points;
+        p.isCurrentPlayer = false; // Reset current player status
       }
-      return player;
+      return p;
     });
 
-    frise = newFrise; // Mettre à jour la frise
+    frise = newFrise;
 
-    // Émettre les nouvelles données à tous les clients
     io.emit("gameState", { players, pioche, frise });
-    io.emit("updatePioche", pioche); // Si nécessaire pour la pioche
+    io.emit("updatePioche", pioche);
 
-    // Passer au joueur suivant
-    currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-    io.emit("nextTurn", players[currentPlayerIndex]);
+    updateCurrentPlayer();
+
+    callback({ success: true });
   });
 
-   socket.on("updatePioche", (updatedPioche: Card[]) => {
-    pioche = updatedPioche; // Mettre à jour la pioche avec les nouvelles cartes
+  socket.on("updatePioche", (updatedPioche: Card[]) => {
+    pioche = updatedPioche;
     console.log("Pioche mise à jour :", pioche);
-    socket.emit("updatePioche", pioche); // Émettre l'événement de mise à jour de la pioche
+    socket.emit("updatePioche", pioche);
   });
 
+  function updateCurrentPlayer() {
+    currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+    players = players.map((player, index) => ({
+      ...player,
+      isCurrentPlayer: index === currentPlayerIndex
+    }));
 
-  // GREG 
-
-  // Lorsqu'un joueur place une carte
-socket.on("placeCarte", ({ carte, position }) => {
-  const index = position === "before" ? 0 : frise.length; // Ajouter avant ou après la première carte
-  const newFrise = [...frise];
-
-  // Ajouter la carte à la frise selon la position
-  if (position === "before") {
-    newFrise.unshift(carte); // Ajouter avant
-  } else {
-    newFrise.push(carte); // Ajouter après
-  }
-
-  // Valider si la carte a été bien placée (à définir par tes règles)
-  const isCorrect = validateCartePlacement(carte, position);
-  let points = 0;
-
-  if (isCorrect) {
-    points = 10; // Exemple de score
-  }
-
-  // Mettre à jour les joueurs (en ajoutant les points si la carte est bien placée)
-  players = players.map(player => {
-    if (player.socketId === socket.id) {
-      player.score += points;
+    const nextSocketId = players[currentPlayerIndex]?.socketId;
+    if (nextSocketId) {
+      io.to(nextSocketId).emit("yourTurn", players[currentPlayerIndex]);
     }
-    return player;
-  });
+  }
 
-  frise = newFrise; // Mettre à jour la frise
+  function validateCartePlacement(carte: Card, position: string): boolean {
+    return true;
+  }
 
-  // Envoyer les nouvelles données à tous les clients
-  io.emit("gameState", { players, pioche, frise });
-  io.emit("updatePioche", pioche); // Si nécessaire pour la pioche
 });
 
-function validateCartePlacement(carte: Card, position: string): boolean {
-  // Par exemple, la carte est valide si elle suit certaines règles (à définir selon ta logique)
-  return true; // Exemple basique : tout placement est correct
-}
-
-
-}); // Close the io.on("connection") block
-
-// Démarrer le serveur
 const PORT = 3001;
 server.listen(PORT, () => {
   console.log(`Serveur en écoute sur le port ${PORT}`);

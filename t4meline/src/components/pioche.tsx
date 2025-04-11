@@ -6,16 +6,19 @@ export default function Pioche({
   pioche = [], // Valeur par défaut pour pioche
   carteSelectionnee,
   onDrawCard,
+  disabled = false, // Prop pour désactiver le bouton
 }: {
   pioche: Card[];
   onDrawCard: (carte: Card) => void;
   carteSelectionnee: Card | null;
+  disabled?: boolean; // Prop optionnelle pour désactiver le bouton
 }) {
   // S'assurer que pioche est toujours défini et est un tableau
   const isPiocheAvailable = Array.isArray(pioche) && pioche.length > 0;
- socket.on("upDatePioche  ", (pioche: Card[]) => {
-    console.log("Pioche mise à jour :", pioche);
 
+  socket.on("updatePioche", (updatedPioche: Card[]) => {
+    console.log("Pioche mise à jour :", updatedPioche);
+    // Vous pouvez mettre à jour l'état local ici si nécessaire
   });
 
   return (
@@ -23,9 +26,9 @@ export default function Pioche({
       <div className="pioche-layout">
         <div className="pioche-liste">
           <div
-            className="card-back"
+            className={`card-back ${disabled ? "disabled" : ""}`}
             onClick={() => {
-              if (isPiocheAvailable) {
+              if (!disabled && isPiocheAvailable) {
                 onDrawCard(pioche[0]);
               }
             }}

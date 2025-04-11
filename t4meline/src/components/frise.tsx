@@ -24,9 +24,11 @@ function Carte(props: { carte: Card }) {
 export default function Frise({
   cartes,
   onAddCarte,
+  disabled = false, // Prop pour désactiver les boutons
 }: {
   cartes: Card[];
   onAddCarte: (index: number, isBefore: boolean) => void;
+  disabled?: boolean; // Prop optionnelle pour désactiver les boutons
 }) {
   return (
     <div className="frise">
@@ -37,12 +39,14 @@ export default function Frise({
               <button
                 className="button_put_before"
                 onClick={() => onAddCarte(index, true)} // Ajouter à gauche
+                disabled={disabled} // Désactiver le bouton si ce n'est pas le tour du joueur
               >
                 ⇙
               </button>
               <button
                 className="button_put_after"
                 onClick={() => onAddCarte(index, false)} // Ajouter à droite
+                disabled={disabled} // Désactiver le bouton si ce n'est pas le tour du joueur
               >
                 ⇘
               </button>
