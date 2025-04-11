@@ -98,18 +98,10 @@ io.on("connection", (socket) => {
       return;
     }
 
-    const newFrise = [...frise];
-    if (position === "before") {
-      newFrise.unshift(carte);
-    } else {
-      newFrise.push(carte);
-    }
+    const isCorrect = validateCartePlacement(carte, position); // place la carte dans la frise déjà
+    let points = isCorrect ? 10 : 0;
 
-    const isCorrect = validateCartePlacement(carte, position);
-    let points = 0;
-    if (isCorrect) {
-      points = 10;
-    }
+
 
     players = players.map(p => {
       if (p.socketId === socket.id) {
@@ -118,8 +110,6 @@ io.on("connection", (socket) => {
       }
       return p;
     });
-
-    frise = newFrise;
 
     io.emit("gameState", { players, pioche, frise });
     io.emit("updatePioche", pioche);
@@ -148,8 +138,45 @@ io.on("connection", (socket) => {
     }
   }
 
+  function getDateValeur(dateStr: string): number {
+    const match = dateStr.match(/-?\d+/g);
+    if (!match) return Number.MAX_SAFE_INTEGER; // Cas très flou qu'on met à la fin
+
+    let num = parseInt(match[0]);
+
+    if (dateStr.includes("av")) {
+      num = -Math.abs(num);
+    }
+
+    return num;
+  }
+
+
   function validateCartePlacement(carte: Card, position: string): boolean {
-    return true;
+    if (frise.length === 0) {
+      frise.push(carte); // Si la frise est vide, on ajoute directement la carte
+      return true;
+    }
+
+    console.log("Frise actuelle :", frise);
+    console.log(typeof (carte.date), carte.date);
+
+    let correctIndex = frise.findIndex((c) => getDateValeur(String(c.date)) > getDateValeur(String(carte.date)));
+    if (correctIndex === -1) {
+      correctIndex = frise.length; // Si aucune carte n'a une date supérieure, insérer à la fin
+    }
+
+    const isCorrect =
+      (position === "before" && correctIndex === 0) ||
+      (position === "after" && correctIndex === frise.length) ||
+      (correctIndex > 0 &&
+        correctIndex < frise.length &&
+        frise[correctIndex - 1].date < carte.date &&
+        frise[correctIndex].date > carte.date);
+
+    frise.splice(correctIndex, 0, carte); // Toujours placer la carte au bon endroit
+
+    return isCorrect; // Retourner si la carte était correctement placée initialement
   }
 
 });
