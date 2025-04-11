@@ -162,9 +162,6 @@ io.on("connection", (socket) => {
     console.log(typeof (carte.date), carte.date);
 
     let correctIndex = frise.findIndex((c) => getDateValeur(String(c.date)) > getDateValeur(String(carte.date)));
-    if (correctIndex === -1) {
-      correctIndex = frise.length; // Si aucune carte n'a une date supérieure, insérer à la fin
-    }
 
     const isCorrect =
       (position === "before" && correctIndex === 0) ||
