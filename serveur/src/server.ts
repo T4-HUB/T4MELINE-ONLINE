@@ -36,9 +36,17 @@ io.on("connection", (socket) => {
     );
 
     if (playerExists) {
-      socket.emit("playerNameTaken", "Ce nom est déjà pris, choisissez-en un autre.");
+      socket.emit(
+        "playerNameTaken",
+        "Ce nom est déjà pris, choisissez-en un autre."
+      );
     } else {
-      players.push({ ...newPlayer, score: 0, socketId: socket.id, isCurrentPlayer: false });
+      players.push({
+        ...newPlayer,
+        score: 0,
+        socketId: socket.id,
+        isCurrentPlayer: false,
+      });
       if (players.length === 1) {
         players[0].isCurrentPlayer = true;
       }
@@ -52,7 +60,9 @@ io.on("connection", (socket) => {
 
   socket.on("togglePlayerStatus", (playerName: string) => {
     players = players.map((player) =>
-      player.name === playerName ? { ...player, isReady: !player.isReady } : player
+      player.name === playerName
+        ? { ...player, isReady: !player.isReady }
+        : player
     );
     console.log("Liste des joueurs mise à jour après modification du statut :");
     console.table(players);
@@ -84,15 +94,17 @@ io.on("connection", (socket) => {
       io.emit("gameState", { players, pioche, frise });
 
       updateCurrentPlayer();
-
     } catch (error) {
       console.error("Erreur lors du chargement des cartes :", error);
-      io.emit("gameError", "Une erreur est survenue lors du chargement des cartes.");
+      io.emit(
+        "gameError",
+        "Une erreur est survenue lors du chargement des cartes."
+      );
     }
   });
 
   socket.on("placeCarte", ({ carte, position }, callback) => {
-    const player = players.find(p => p.socketId === socket.id);
+    const player = players.find((p) => p.socketId === socket.id);
     if (!player || !player.isCurrentPlayer) {
       callback({ success: false, message: "Ce n'est pas votre tour." });
       return;
@@ -111,7 +123,7 @@ io.on("connection", (socket) => {
       points = 10;
     }
 
-    players = players.map(p => {
+    players = players.map((p) => {
       if (p.socketId === socket.id) {
         p.score += points;
         p.isCurrentPlayer = false; // Reset current player status
@@ -139,7 +151,7 @@ io.on("connection", (socket) => {
     currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
     players = players.map((player, index) => ({
       ...player,
-      isCurrentPlayer: index === currentPlayerIndex
+      isCurrentPlayer: index === currentPlayerIndex,
     }));
 
     const nextSocketId = players[currentPlayerIndex]?.socketId;
@@ -151,8 +163,35 @@ io.on("connection", (socket) => {
   function validateCartePlacement(carte: Card, position: string): boolean {
     return true;
   }
-
 });
+
+// Fonction exécutée toutes les 10 secondes
+function periodicTask() {
+  console.log("Tâche périodique exécutée : mise à jour des joueurs.");
+  // Exemple : Envoyer un message à tous les clients connectés
+  io.emit("periodicUpdate", {
+    message: "Mise à jour périodique du serveur.",
+  });
+
+  players = players.filter((player) => {
+    const isConnected = player.socketId
+      ? io.sockets.sockets.get(player.socketId)
+      : undefined;
+    if (!isConnected) {
+      console.log(`Le joueur ${player.name} s'est déconnecté.`);
+      nbrPlayers--;
+    }
+    return isConnected;
+  });
+
+  io.emit("playersUpdate", players);
+  console.log(
+    `Nombre de joueurs connectés après vérification : ${nbrPlayers}\n`
+  );
+}
+
+// Lancer la tâche périodique
+setInterval(periodicTask, 10000); // 10 000 ms = 10 secondes
 
 const PORT = 3001;
 server.listen(PORT, () => {
