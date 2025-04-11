@@ -112,6 +112,7 @@ io.on("connection", (socket) => {
   
     const isCorrect = validateCartePlacement(carte, index);
     const points = isCorrect ? 1 : 0;
+    player.score += points;
   
     players = players.map((p) =>
       p.socketId === socket.id ? { ...p, score: p.score + points, isCurrentPlayer: false } : p

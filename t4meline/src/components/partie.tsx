@@ -84,8 +84,7 @@ function Partie() {
     if (!isMyTurn) {
       return;
     }
-
-    socket.emit("placeCarte", { carte, position: isBefore ? "before" : "after" }, (response) => {
+    socket.emit("placeCarte", { carte, index: index, position: isBefore ? "before" : "after" }, (response) => {
       if (!response.success) {
         alert(response.message);
       }
