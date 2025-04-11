@@ -1,4 +1,3 @@
-
 .partie {
   display: flex;
   flex-direction: row; /* Met les enfants en ligne */
@@ -7,17 +6,52 @@
 }
 
 .leaderboard {
-  width: 20%; /* Exemple, ajuste comme tu veux */
+  width: 15%;
   min-width: 200px;
   height: min-content;
-  overflow: hidden; /* Fixe, ne scrollent pas */
+  overflow: hidden;
+  display: flex; /* Active le flexbox */
+  justify-content: center; /* Centre horizontalement */
+  align-items: center; /* Centre verticalement */
+  flex-direction: column; /* Aligne les enfants en colonne */
+  padding-bottom: 20px;
+  margin-top: 20px;
+  margin-right: 5px;
 }
 
 .frise-container {
-  flex: 1; /* Prend l’espace restant */
-  overflow-y: auto; /* Scroll vertical uniquement pour la frise */
+ 
+  margin: 5px;
+  border: #a52d4f 5px solid;
+  border-radius: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  flex: 1;
+  overflow-y: auto;
   padding: 1rem;
-  background: #f9f9f9;
+
+  /* Scrollbar stylée */
+  scrollbar-width: thin; /* Pour Firefox */
+  scrollbar-color: #a52d4f #f1f1f1; /* thumb / track */
+}
+
+/* Pour WebKit (Chrome, Edge, Safari) */
+.frise-container::-webkit-scrollbar {
+  width: 10px;
+}
+
+.frise-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.frise-container::-webkit-scrollbar-thumb {
+  background: #a52d4f;
+  border-radius: 10px;
+  border: 2px solid #f1f1f1; 
+}
+
+.frise-container::-webkit-scrollbar-thumb:hover {
+  background: #8f2442;
 }
 
 .pioche {

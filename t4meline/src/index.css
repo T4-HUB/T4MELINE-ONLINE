@@ -54,6 +54,7 @@ button:focus-visible {
   width: 99%;
   margin: auto;
   box-sizing: border-box;
+  padding-left: 450px;
 }
 
 .frise__add {
@@ -68,8 +69,6 @@ button:focus-visible {
   display: flex;
   place-items: center;
   gap: 1em;
-  margin: auto;
-  padding-top: 150px;
 }
 
 .carte__details {
@@ -84,6 +83,14 @@ button:focus-visible {
   display: flex;
   justify-content: space-between;
   margin-top: 1em;
+}
+
+.frise__container > .card:first-child {
+  margin-left: 1rem; /* Ajoute un espace à gauche */
+}
+
+.frise__container > .card:last-child {
+  margin-right: 1rem; /* Ajoute un espace à droite */
 }
 
 .card {
@@ -140,6 +147,7 @@ button:focus-visible {
 .card__body p {
   color: gray;
   padding: 0px 10px 30px 10px;
+  font-size: 20px;
 }
 
 .card__footer {

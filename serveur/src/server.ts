@@ -111,7 +111,7 @@ io.on("connection", (socket) => {
     }
 
     const isCorrect = validateCartePlacement(carte, position); // place la carte dans la frise déjà
-    let points = isCorrect ? 10 : 0;
+    let points = isCorrect ? 1 : 0;
 
     players = players.map((p) => {
       if (p.socketId === socket.id) {
