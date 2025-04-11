@@ -190,6 +190,12 @@ io.on("connection", (socket) => {
         getDateValeur(frise[correctIndex - 1].date.toString()) < carteDate &&
         getDateValeur(frise[correctIndex].date.toString()) > carteDate);
 
+    if (!isCorrect) {
+      console.log("Placement incorrect de la carte :", carte);
+      frise.splice(correctIndex, 0, carte);
+      return false;
+    }
+
     // On insère toujours à la bonne place
     frise.splice(correctIndex, 0, carte);
 
