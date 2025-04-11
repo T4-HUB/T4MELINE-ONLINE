@@ -113,8 +113,6 @@ io.on("connection", (socket) => {
     const isCorrect = validateCartePlacement(carte, position); // place la carte dans la frise déjà
     let points = isCorrect ? 10 : 0;
 
-
-
     players = players.map((p) => {
       if (p.socketId === socket.id) {
         p.score += points;
@@ -167,7 +165,6 @@ io.on("connection", (socket) => {
     return year;
   }
 
-
   function validateCartePlacement(carte: Card, position: string): boolean {
     if (frise.length === 0) {
       frise.push(carte);
@@ -177,7 +174,9 @@ io.on("connection", (socket) => {
     const carteDate = getDateValeur(carte.date.toString());
 
     // Cherche le premier index où la carte en frise est plus récente
-    let correctIndex = frise.findIndex(c => getDateValeur(c.date.toString()) > carteDate);
+    let correctIndex = frise.findIndex(
+      (c) => getDateValeur(c.date.toString()) > carteDate
+    );
 
     // Si aucune carte n'est plus récente, on insère à la fin
     if (correctIndex === -1) {
@@ -222,9 +221,6 @@ function periodicTask() {
     `Nombre de joueurs connectés après vérification : ${nbrPlayers}\n`
   );
 }
-
-// Lancer la tâche périodique
-setInterval(periodicTask, 10000); // 10 000 ms = 10 secondes
 
 const PORT = 3001;
 server.listen(PORT, () => {
