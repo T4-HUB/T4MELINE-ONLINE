@@ -6,6 +6,7 @@ interface CarteProps {
 }
 
 export default function Carte({ carte, isVisible }: CarteProps) {
+  console.log("Carte component rendered with carte:", carte, "isVisible:", isVisible);
   return !isVisible ? (
     <div className="carte-title">{carte && <h2>{carte.titre}</h2>}</div>
   ) : (

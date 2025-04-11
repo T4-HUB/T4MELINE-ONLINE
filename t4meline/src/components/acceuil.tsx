@@ -2,11 +2,10 @@ import { useState, useEffect } from "react";
 import io from "socket.io-client";
 import "./acceuil.css";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../config"; // Chemin relatif selon ton fichier
+import { socket } from "../config"; // Chemin relatif selon ton fichier
 
 
 // Adresse du serveur
-const socket = io(API_URL);
 
 function Acceuil() {
   const [inputValue, setInputValue] = useState(""); // Saisie du nom du joueur

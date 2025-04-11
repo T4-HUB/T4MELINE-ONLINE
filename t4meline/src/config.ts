@@ -1,3 +1,5 @@
 // config.ts
-export const API_URL = "https://w41-api.onrender.com/";
-    
+import io from 'socket.io-client';
+
+export const API_URL = "http://localhost:3001";
+export const socket = io(API_URL)

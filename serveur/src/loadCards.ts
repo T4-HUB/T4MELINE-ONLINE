@@ -1,5 +1,5 @@
-import Papa from "papaparse";
-import { Card } from "../utils/types";
+import * as Papa from "papaparse";
+import { Card } from "./types";
 
 const CSV_URL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vQlzxMUajqLjmCZ_I-NAie0g-ZxTsJqjOnj6R-w139EnpG-XY3DTJ4Hg5iTtzgnfQmSxJnhu0Tl502b/pub?gid=1517720865&single=true&output=csv";
@@ -19,7 +19,7 @@ export async function loadCards(limit?: number): Promise<Card[]> {
   }
   const csvText = await response.text();
 
-  return new Promise<Card[]>((resolve) => {
+  return new Promise<Card[]>((resolve, reject) => {
     Papa.parse(csvText, {
       complete: (result) => {
         // Filtrer les lignes où une ou plusieurs cases sont vides

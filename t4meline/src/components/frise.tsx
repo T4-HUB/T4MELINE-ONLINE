@@ -10,7 +10,7 @@ function Carte(props: { carte: Card }) {
         <h1 className="card__body__head">{props.carte.titre}</h1>
         <p className="card__body__content">{props.carte.detail}</p>
       </div>
-      <div style={{ backgroundColor: "red" }} className="card__footer">
+      <div style={{ backgroundColor: "rgb(118 162 255)" }} className="card__footer">
         <div className="card__Footer__first">
           <div>
             <p>{props.carte.date}</p>
@@ -30,7 +30,6 @@ export default function Frise({
 }) {
   return (
     <div className="frise">
-      <h2>🗓️ Frise Chronologique</h2>
       <div className="frise__container">
         {cartes.map((carte, index) => (
           <div key={carte.id} className="frise__carte">
@@ -39,13 +38,13 @@ export default function Frise({
                 className="button_put_before"
                 onClick={() => onAddCarte(index, true)} // Ajouter à gauche
               >
-                ↖
+                ⇙
               </button>
               <button
                 className="button_put_after"
                 onClick={() => onAddCarte(index, false)} // Ajouter à droite
               >
-                ↘
+                ⇘
               </button>
             </div>
             <Carte carte={carte} />

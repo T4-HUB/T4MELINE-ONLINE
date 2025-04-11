@@ -1,11 +1,9 @@
 import "./pioche.css";
-import Carte from "./carte";
-import React, { useState, useEffect } from "react";
+import { socket } from "../config"; // Chemin relatif selon ton fichier
 import { Card } from "../utils/types";
-import { loadCards } from "../utils/loadCards";
 
 export default function Pioche({
-  pioche,
+  pioche = [], // Valeur par défaut pour pioche
   carteSelectionnee,
   onDrawCard,
 }: {
@@ -13,8 +11,12 @@ export default function Pioche({
   onDrawCard: (carte: Card) => void;
   carteSelectionnee: Card | null;
 }) {
+  // S'assurer que pioche est toujours défini et est un tableau
+  const isPiocheAvailable = Array.isArray(pioche) && pioche.length > 0;
+ socket.on("upDatePioche  ", (pioche: Card[]) => {
+    console.log("Pioche mise à jour :", pioche);
 
-
+  });
 
   return (
     <div className="pioche">
@@ -23,12 +25,12 @@ export default function Pioche({
           <div
             className="card-back"
             onClick={() => {
-              if (pioche.length > 0) {
+              if (isPiocheAvailable) {
                 onDrawCard(pioche[0]);
               }
             }}
           >
-            <p>{pioche.length > 0 ? "Tirer une carte" : "Pioche vide"}</p>
+            <p>{isPiocheAvailable ? "Tirer une carte" : "Pioche vide"}</p>
           </div>
         </div>
 
@@ -36,7 +38,12 @@ export default function Pioche({
           <h3>Carte sélectionnée</h3>
           <div className="selected-card">
             {carteSelectionnee ? (
-              <Carte carte={carteSelectionnee} isVisible={false} />
+              <div className="carte-title">
+                <h2>{carteSelectionnee.titre}</h2>
+                <div className="carte-footer">
+                  <h2>?</h2>
+                </div>
+              </div>
             ) : (
               <p>Aucune carte sélectionnée</p>
             )}
