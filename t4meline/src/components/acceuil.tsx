@@ -3,7 +3,7 @@ import io from "socket.io-client";
 import "./acceuil.css";
 import { useNavigate } from "react-router-dom";
 import { socket } from "../config"; // Chemin relatif selon ton fichier
-
+import logo from "../assets/Bleu_canard.png";
 
 // Adresse du serveur
 
@@ -75,26 +75,25 @@ function Acceuil() {
   return (
     <div className="main-content">
       <div className="input-section">
-        <h1>T4meline</h1>
-        <div className="input-boutton">
-          <input
-            type="text"
-            placeholder="Entrez votre nom"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            disabled={hasJoined} // Désactiver le champ de saisie si déjà rejoint
-          />
-          <button
-            className="boutton_plus"
-            onClick={handleAddPlayer}
-            disabled={hasJoined} // Désactiver le bouton si déjà rejoint
-          >
-            S'ajouter
-          </button>
-        </div>
+      <img src={logo}  alt="T4meline Logo" className="logo-image" />
+        {!hasJoined ? (
+          <div className="input-boutton">
+            <input
+              type="text"
+              placeholder="Entrez votre nom"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+            />
+            <button className="boutton_plus" onClick={handleAddPlayer}>
+              S'ajouter
+            </button>
+          </div>
+        ) : (
+          <p>Bienvenue, {currentPlayer} !</p>
+        )}
         {errorMessage && <p className="error-message">{errorMessage}</p>}
       </div>
-
+  
       <ul className="items-list">
         {players.map((player) => (
           <li key={player.name}>
@@ -109,7 +108,7 @@ function Acceuil() {
       </ul>
       <div className="footer-section">
         <button className="boutton_lancer" onClick={startGame} disabled={players.length === 0}>
-          Lancer la partie
+          Play
         </button>
       </div>
     </div>
