@@ -151,41 +151,50 @@ io.on("connection", (socket) => {
   }
 
   function getDateValeur(dateStr: string): number {
+    // Extraire les nombres de la chaîne (jours, mois, années)
     const match = dateStr.match(/-?\d+/g);
-    if (!match) return Number.MAX_SAFE_INTEGER; // Cas très flou qu'on met à la fin
+    if (!match) return Number.MAX_SAFE_INTEGER; // Si aucun nombre trouvé, placer à la fin
 
-    let num = parseInt(match[0]);
+    // Extraire l'année (dernier nombre dans la chaîne)
+    let year = parseInt(match[match.length - 1]);
 
-    if (dateStr.includes("av")) {
-      num = -Math.abs(num);
+    // Si la date contient "av" (avant), rendre l'année négative
+    if (dateStr.toLowerCase().includes("av")) {
+      year = -Math.abs(year);
     }
 
-    return num;
+    // Retourner uniquement l'année pour la comparaison
+    return year;
   }
 
 
   function validateCartePlacement(carte: Card, position: string): boolean {
     if (frise.length === 0) {
-      frise.push(carte); // Si la frise est vide, on ajoute directement la carte
+      frise.push(carte);
       return true;
     }
 
-    console.log("Frise actuelle :", frise);
-    console.log(typeof (carte.date), carte.date);
+    const carteDate = getDateValeur(carte.date.toString());
 
-    let correctIndex = frise.findIndex((c) => getDateValeur(String(c.date)) > getDateValeur(String(carte.date)));
+    // Cherche le premier index où la carte en frise est plus récente
+    let correctIndex = frise.findIndex(c => getDateValeur(c.date.toString()) > carteDate);
+
+    // Si aucune carte n'est plus récente, on insère à la fin
+    if (correctIndex === -1) {
+      correctIndex = frise.length;
+    }
 
     const isCorrect =
       (position === "before" && correctIndex === 0) ||
       (position === "after" && correctIndex === frise.length) ||
       (correctIndex > 0 &&
-        correctIndex < frise.length &&
-        frise[correctIndex - 1].date < carte.date &&
-        frise[correctIndex].date > carte.date);
+        getDateValeur(frise[correctIndex - 1].date.toString()) < carteDate &&
+        getDateValeur(frise[correctIndex].date.toString()) > carteDate);
 
-    frise.splice(correctIndex, 0, carte); // Toujours placer la carte au bon endroit
+    // On insère toujours à la bonne place
+    frise.splice(correctIndex, 0, carte);
 
-    return isCorrect; // Retourner si la carte était correctement placée initialement
+    return isCorrect;
   }
 });
 
