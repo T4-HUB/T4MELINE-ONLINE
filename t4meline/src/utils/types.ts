@@ -11,5 +11,7 @@ export type Player = {
     score: number;
     isReady: boolean;
     isCurrentPlayer: boolean; // Indique si le joueur est le joueur actuel
+    socketId?: string; 
+
     id: string;
 };

@@ -81,24 +81,60 @@ io.on("connection", (socket) => {
     console.log("Tous les joueurs sont prêts, la partie commence !");
   });
 
-  socket.on("initGame", async () => {
+   // Initialisation du jeu
+   socket.on("initGame", async () => {
     try {
       const loadedCards = await loadCards(80); // Chargez les cartes
-      pioche = loadedCards; // Mettre à jour les cartes
-
+      pioche = loadedCards;
       const randomIndex = Math.floor(Math.random() * pioche.length);
       const carteTiree = pioche[randomIndex]; // Tire la première carte
-
       pioche.splice(randomIndex, 1); // Enlève la carte de la pioche
-
-      // Ajouter la carte à la frise au milieu
       frise = [carteTiree]; // Initialiser la frise avec une seule carte
+      io.emit("gameState", { players, pioche, frise });
 
-      io.emit("gameState", { players, pioche, frise }); // Émettre l'état initial du jeu avec la frise
+      // Notifier au joueur actuel qu'il doit jouer
+      socket.emit("yourTurn", players[currentPlayerIndex]);
+
     } catch (error) {
       console.error("Erreur lors du chargement des cartes :", error);
       io.emit("gameError", "Une erreur est survenue lors du chargement des cartes.");
     }
+  });
+
+  // Quand un joueur place une carte
+  socket.on("placeCarte", ({ carte, position }) => {
+    const newFrise = [...frise];
+    const index = position === "before" ? 0 : frise.length;
+    if (position === "before") {
+      newFrise.unshift(carte);
+    } else {
+      newFrise.push(carte);
+    }
+
+    // Valider le placement de la carte
+    const isCorrect = validateCartePlacement(carte, position);
+    let points = 0;
+    if (isCorrect) {
+      points = 10; // Exemple de score
+    }
+
+    // Mise à jour des scores
+    players = players.map(player => {
+      if (player.socketId === socket.id) {
+        player.score += points;
+      }
+      return player;
+    });
+
+    frise = newFrise; // Mettre à jour la frise
+
+    // Émettre les nouvelles données à tous les clients
+    io.emit("gameState", { players, pioche, frise });
+    io.emit("updatePioche", pioche); // Si nécessaire pour la pioche
+
+    // Passer au joueur suivant
+    currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+    io.emit("nextTurn", players[currentPlayerIndex]);
   });
 
    socket.on("updatePioche", (updatedPioche: Card[]) => {
