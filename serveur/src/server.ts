@@ -103,31 +103,27 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("placeCarte", ({ carte, position }, callback) => {
+  socket.on("placeCarte", ({ carte, index ,isBoolean }, callback) => {
     const player = players.find((p) => p.socketId === socket.id);
     if (!player || !player.isCurrentPlayer) {
       callback({ success: false, message: "Ce n'est pas votre tour." });
       return;
     }
-
-    const isCorrect = validateCartePlacement(carte, position); // place la carte dans la frise déjà
-    let points = isCorrect ? 1 : 0;
-
-    players = players.map((p) => {
-      if (p.socketId === socket.id) {
-        p.score += points;
-        p.isCurrentPlayer = false; // Reset current player status
-      }
-      return p;
-    });
-
+  
+    const isCorrect = validateCartePlacement(carte, index);
+    const points = isCorrect ? 1 : 0;
+  
+    players = players.map((p) =>
+      p.socketId === socket.id ? { ...p, score: p.score + points, isCurrentPlayer: false } : p
+    );
+  
     io.emit("gameState", { players, pioche, frise });
     io.emit("updatePioche", pioche);
-
     updateCurrentPlayer();
-
+  
     callback({ success: true });
   });
+  
 
   socket.on("updatePioche", (updatedPioche: Card[]) => {
     pioche = updatedPioche;
@@ -148,6 +144,47 @@ io.on("connection", (socket) => {
     }
   }
 
+  function compareDates(date1: string, date2: string): number {
+    const value1 = parseSeasonalDate(date1, "start");
+    const value2 = parseSeasonalDate(date2, "start");
+
+    if (value1 === null || value2 === null) {
+      console.warn(`Impossible de comparer les dates : "${date1}" et "${date2}"`);
+      return 0;
+    }
+
+    return value1 - value2;
+  }
+
+  function parseSeasonalDate(dateStr: string, mode: "start" | "average" = "start"): number | null {
+    const seasonMap: { [key: string]: number } = {
+      "printemps": 0.0,
+      "été": 0.25,
+      "ete": 0.25,
+      "automne": 0.5,
+      "hiver": 0.75
+    };
+
+    const seasons = [...dateStr.toLowerCase().matchAll(/(printemps|été|ete|automne|hiver)/g)];
+    const years = [...dateStr.matchAll(/\d{4}/g)].map(match => parseInt(match[0]));
+
+    if (years.length === 0) return null;
+
+    const getDateValue = (index: number): number => {
+      const year = years[index];
+      const seasonMatch = seasons[index];
+      const season = seasonMatch ? seasonMap[seasonMatch[1]] : 0.0;
+      return year + season;
+    };
+
+    if (mode === "average" && years.length >= 2) {
+      const start = getDateValue(0);
+      const end = getDateValue(1);
+      return (start + end) / 2;
+    }
+
+    return getDateValue(0);
+  }
   function getDateValeur(dateStr: string): number {
     // Extraire les nombres de la chaîne (jours, mois, années)
     const match = dateStr.match(/-?\d+/g);
@@ -165,68 +202,30 @@ io.on("connection", (socket) => {
     return year;
   }
 
-  function validateCartePlacement(carte: Card, position: string): boolean {
+  function validateCartePlacement(carte: Card, index: number): boolean {
     if (frise.length === 0) {
       frise.push(carte);
       return true;
     }
-
+  
     const carteDate = getDateValeur(carte.date.toString());
-
-    // Cherche le premier index où la carte en frise est plus récente
+  
     let correctIndex = frise.findIndex(
       (c) => getDateValeur(c.date.toString()) > carteDate
     );
-
-    // Si aucune carte n'est plus récente, on insère à la fin
+  
     if (correctIndex === -1) {
       correctIndex = frise.length;
     }
-
-    const isCorrect =
-      (position === "before" && correctIndex === 0) ||
-      (position === "after" && correctIndex === frise.length) ||
-      (correctIndex > 0 &&
-        getDateValeur(frise[correctIndex - 1].date.toString()) < carteDate &&
-        getDateValeur(frise[correctIndex].date.toString()) > carteDate);
-
-    if (!isCorrect) {
-      console.log("Placement incorrect de la carte :", carte);
-      frise.splice(correctIndex, 0, carte);
-      return false;
-    }
-
-    // On insère toujours à la bonne place
+    console.log("Index correct pour la carte :", correctIndex,index);
+    let isCorrect = (index === correctIndex) || (index === correctIndex - 1);
+  
     frise.splice(correctIndex, 0, carte);
-
+    
     return isCorrect;
   }
+  
 });
-
-// Fonction exécutée toutes les 10 secondes
-function periodicTask() {
-  console.log("Tâche périodique exécutée : mise à jour des joueurs.");
-  // Exemple : Envoyer un message à tous les clients connectés
-  io.emit("periodicUpdate", {
-    message: "Mise à jour périodique du serveur.",
-  });
-
-  players = players.filter((player) => {
-    const isConnected = player.socketId
-      ? io.sockets.sockets.get(player.socketId)
-      : undefined;
-    if (!isConnected) {
-      console.log(`Le joueur ${player.name} s'est déconnecté.`);
-      nbrPlayers--;
-    }
-    return isConnected;
-  });
-
-  io.emit("playersUpdate", players);
-  console.log(
-    `Nombre de joueurs connectés après vérification : ${nbrPlayers}\n`
-  );
-}
 
 const PORT = 3001;
 server.listen(PORT, () => {
